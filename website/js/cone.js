@@ -1,5 +1,6 @@
 // 메인화면 원뿔 모션그래픽
-// 작은 카드들이 나선을 따라 원뿔 표면을 흐르고, 꼭지 앞의 별똥별을 따라 날아가는 것처럼 보임
+// 작은 카드들이 촘촘한 고리로 원뿔을 이루어 매끈하게 돌고, 꼭지 앞 혜성을 따라 날아가는 것처럼 보임.
+// 카메라는 옆모습과 입구를 들여다보는 시점 사이를 천천히 오감
 (() => {
   const canvas = document.getElementById('hero-cone');
   if (!canvas || !canvas.getContext) return;
@@ -9,22 +10,19 @@
   // 원뿔 치수 (월드 단위). 꼭지는 오른쪽(약간 아래), 넓은 입구는 왼쪽
   // 꼭지 앞의 별똥별을 따라 날아가는 것처럼 보이지만 원뿔 자체는 제자리
   const L = 2.0, R = 1.25, R0 = 0.04;
-  const ARMS = 6, TURNS = 1.8;  // 나선 팔 개수, 꼭지에서 입구까지 감기는 바퀴 수
-  // 넓이 비율 w(0~1)를 꼭지→입구 위치 u로 바꿈: 넓은 입구 쪽에도 카드가 고르게 퍼지게
-  const K = (R - R0) / 2, AREA = R0 + K;
-  const uOf = (w) => (-R0 + Math.sqrt(R0 * R0 + 4 * K * w * AREA)) / (2 * K);
-  const CARD_W = 0.013, CARD_H = 0.018;
-  const CAM = 5;              // 카메라 거리
+  const RINGS = 36;            // 꼭지에서 입구까지 촘촘히 쌓인 고리 수
+  const CARD_W = 0.015, CARD_H = 0.021;
+  // 카메라: 옆에서 보다가 천천히 돌아 입구 안쪽을 들여다보고 다시 돌아옴
+  const CAM_PERIOD = 36;      // 한 번 오가는 데 걸리는 초
+  let camDist = 5, camYaw = 0, camPitch = 0;
   const rAt = (a) => R0 + (R - R0) * ((a + L / 2) / L);
   const LOOSE = 0.13;         // 원뿔에 붙지 않고 떠다니는 비율
   const LOOSE_LO = -0.3, LOOSE_HI = L / 2 + 1.6;
 
   const isPhone = Math.min(innerWidth, innerHeight) < 700;
   const state = {
-    count: isPhone ? 3000 : 4000,
+    count: isPhone ? 4000 : 5500,
     turn: 32,                 // 한 바퀴 초
-    flow: 28,                 // 카드가 꼭지에서 입구까지 흘러가는 초
-    mix: 55,                  // 나선 줄에 모인 카드 비율(%). 나머지는 표면을 고르게 채움
     tilt: 8,                  // 꼭지가 수평에서 아래로 기운 각도
     drawn: 0,                 // 실제로 그리는 수 (성능에 따라 줄어듦)
   };
@@ -43,16 +41,17 @@
     const nLoose = Math.round(state.count * LOOSE);
     const nCone = state.count - nLoose;
     cards = [];
-    // 일부는 나선 줄에, 나머지는 표면 전체에. 모두 같은 나선 흐름을 타고 꼭지→입구로 이동
-    for (let i = 0; i < nCone; i++) {
-      const w = Math.random();
-      cards.push(makeCard({
-        u: uOf(w), w,
-        rank: Math.random(),
-        armPhi: (i % ARMS) / ARMS * Math.PI * 2 + (Math.random() - 0.5) * (Math.random() - 0.5) * 0.7,
-        freePhi: Math.random() * Math.PI * 2,
-        dr: 1 + (Math.random() - 0.5) * 0.05,
-      }));
+    // 고리마다 둘레에 비례해 카드를 고르게 늘어놓음 (넓은 입구 쪽 고리일수록 많이)
+    let sum = 0;
+    for (let i = 0; i < RINGS; i++) sum += rAt(-L / 2 + L * (i + 0.5) / RINGS);
+    for (let i = 0; i < RINGS; i++) {
+      const u = (i + 0.5) / RINGS;
+      const a = -L / 2 + L * u;
+      const n = Math.max(6, Math.round(nCone * rAt(a) / sum));
+      const phase = Math.random() * Math.PI * 2;
+      for (let j = 0; j < n; j++) {
+        cards.push(makeCard({ a, u, ring: i, phi: phase + (j + (Math.random() - 0.5) * 0.3) / n * Math.PI * 2 }));
+      }
     }
     for (let k = 0; k < nLoose; k++) {
       // 넓은 입구 쪽(왼쪽) 바깥에 구름처럼 떠 있는 카드
@@ -78,7 +77,7 @@
     o.sx = (Math.random() - 0.5) * 6;
     o.sy = (Math.random() - 0.5) * 6;
     o.sz = -2 + Math.random() * 3.2;
-    const ringOrder = o.loose ? Math.random() : o.u;
+    const ringOrder = o.loose ? Math.random() : o.ring / RINGS;
     o.delay = 0.15 + ringOrder * 1.7 + Math.random() * 0.45;
     o.aspect = 0.8 + Math.random() * 0.5;
     return o;
@@ -98,15 +97,15 @@
   function anchor() {
     const portrait = H > W;
     const tx = portrait ? W * 0.4 : W * 0.58;
-    const ty = (portrait ? H * 0.63 : H * 0.56) + Math.sin(bobT * 0.9) * H * 0.006;
+    const ty = portrait ? H * 0.63 : H * 0.56;
     coneToWorld(0, 0, 0, out);
-    const s = focal / (CAM - out.z);
+    const s = focal / (camDist - out.z);
     cx = tx - out.x * s;
     cy = ty + out.y * s;
   }
 
   // 회전: 축(x)을 중심으로 spin, 그다음 y축으로 살짝 돌려 입구가 보이게, z축으로 화면에서 기울임
-  let spin = 0, spinBoost = 0, bobT = 0;
+  let spin = 0, spinBoost = 0;
   const out = { x: 0, y: 0, z: 0 };
   function coneToWorld(a, r, phi, o) {
     localToWorld(a, r * Math.cos(phi), r * Math.sin(phi), o);
@@ -115,10 +114,15 @@
     const yaw = -0.3;
     const x1 = a * Math.cos(yaw) + z0 * Math.sin(yaw);
     const z1 = -a * Math.sin(yaw) + z0 * Math.cos(yaw);
-    const roll = Math.PI - (state.tilt + Math.sin(bobT * 0.7) * 1.2) * Math.PI / 180;
-    o.x = x1 * Math.cos(roll) - y0 * Math.sin(roll);
-    o.y = x1 * Math.sin(roll) + y0 * Math.cos(roll);
-    o.z = z1;
+    const roll = Math.PI - state.tilt * Math.PI / 180;
+    const x2 = x1 * Math.cos(roll) - y0 * Math.sin(roll);
+    const y2 = x1 * Math.sin(roll) + y0 * Math.cos(roll);
+    // 카메라 시점: 세로축으로 돌고(yaw) 살짝 위아래로(pitch)
+    const x3 = x2 * Math.cos(camYaw) + z1 * Math.sin(camYaw);
+    const z3 = -x2 * Math.sin(camYaw) + z1 * Math.cos(camYaw);
+    o.x = x3;
+    o.y = y2 * Math.cos(camPitch) - z3 * Math.sin(camPitch);
+    o.z = y2 * Math.sin(camPitch) + z3 * Math.cos(camPitch);
   }
 
   const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -128,7 +132,7 @@
 
   const project = (a, r, phi) => {
     coneToWorld(a, r, phi, out);
-    const sc = focal / (CAM - out.z);
+    const sc = focal / (camDist - out.z);
     return [cx + out.x * sc, cy - out.y * sc, sc];
   };
 
@@ -236,7 +240,12 @@
       if (slowFor > 2 && state.drawn > 400) { state.drawn = Math.round(state.drawn * 0.8); slowFor = 0; }
     } else slowFor = 0;
 
-    bobT = t;
+    if (!reduceMotion) {
+      const k = (1 - Math.cos(t * Math.PI * 2 / CAM_PERIOD)) / 2;   // 0 → 1 → 0 부드럽게
+      camYaw = 0.6 * k;
+      camPitch = 0.12 * Math.sin(t * Math.PI * 2 / CAM_PERIOD);
+      camDist = 5 - 0.35 * k;
+    }
     ctx.clearRect(0, 0, W, H);
     anchor();
     if (!reduceMotion) drawStreaks(dt);
@@ -252,15 +261,8 @@
         coneToWorld(a, rAt(Math.min(a, L / 2)) * c.k + 0.08 + Math.cos(t * 0.5 + c.seed) * 0.03, c.phi + Math.sin(t * 0.3 + c.seed) * 0.1, out);
         wx = out.x; wy = out.y; wz = out.z;
       } else {
-        // 바람에 날리는 것처럼 뒤쪽으로 흘러가는 잔물결
-        // 나선을 따라 꼭지에서 입구 쪽으로 흐름 (비행 반대 방향)
-        const u = uOf((c.w + t / state.flow) % 1);
-        const a = -L / 2 + L * u;
-        const wave = 1 + 0.03 * Math.sin(a * 7 - t * 6) * Math.min(1, Math.max(0, t - 2.5));
-        const base = c.rank < state.mix / 100 ? c.armPhi : c.freePhi;
-        const phi = base + u * TURNS * Math.PI * 2 + spin;
-        fade = Math.min(1, u / 0.04, (1 - u) / 0.08);
-        coneToWorld(a, rAt(a) * c.dr * wave, phi, out);
+        // 고정된 고리 그대로 축을 중심으로 매끈하게 회전
+        coneToWorld(c.a, rAt(c.a), c.phi + spin, out);
         wx = out.x; wy = out.y; wz = out.z;
       }
       const p = Math.min(1, Math.max(0, (t - c.delay) / 1.5));
@@ -270,7 +272,8 @@
         wy = c.sy + (wy - c.sy) * e;
         wz = c.sz + (wz - c.sz) * e;
       }
-      const s = focal / (CAM - wz);
+      if (camDist - wz < 0.5) continue;
+      const s = focal / (camDist - wz);
       const px = cx + wx * s, py = cy - wy * s;
       if (px < -10 || px > W + 10 || py < -10 || py > H + 10) continue;
       const depth = Math.min(1, Math.max(0, (wz + 1.3) / 2.6));
