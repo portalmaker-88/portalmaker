@@ -169,6 +169,30 @@
     ctx.globalCompositeOperation = 'source-over';
   }
 
+  // 입구 테두리의 와이어 링 (가는 관을 둥글게 만 모양), 원뿔과 같이 회전
+  function drawRim() {
+    const rt = 0.045, segs = 72, tubes = 36, tseg = 10;
+    const pt = (phi, psi) => project(L / 2 + rt * Math.cos(psi), R + rt * Math.sin(psi), phi + spin);
+    ctx.strokeStyle = 'rgba(236,230,218,0.38)';
+    ctx.lineWidth = 0.7;
+    ctx.beginPath();
+    for (let k = 0; k < 4; k++) {
+      const psi = k * Math.PI / 2;
+      for (let i = 0; i <= segs; i++) {
+        const [x, y] = pt(i / segs * Math.PI * 2, psi);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+    }
+    for (let i = 0; i < tubes; i++) {
+      const phi = i / tubes * Math.PI * 2;
+      for (let j = 0; j <= tseg; j++) {
+        const [x, y] = pt(phi, j / tseg * Math.PI * 2);
+        j ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+    }
+    ctx.stroke();
+  }
+
   // 머리에서 떨어져 뒤로 흩날리는 불티
   const sparks = [];
   function updateSparks(dt) {
@@ -242,9 +266,9 @@
 
     if (!reduceMotion) {
       const k = (1 - Math.cos(t * Math.PI * 2 / CAM_PERIOD)) / 2;   // 0 → 1 → 0 부드럽게
-      camYaw = 0.6 * k;
-      camPitch = 0.12 * Math.sin(t * Math.PI * 2 / CAM_PERIOD);
-      camDist = 5 - 0.35 * k;
+      camYaw = 0.3 * k;
+      camPitch = 0.06 * Math.sin(t * Math.PI * 2 / CAM_PERIOD);
+      camDist = 5 - 0.175 * k;
     }
     ctx.clearRect(0, 0, W, H);
     anchor();
@@ -283,6 +307,7 @@
       ctx.fillRect(px - w / 2, py - h / 2, w, h);
     }
     ctx.globalAlpha = 1;
+    drawRim();
     if (!reduceMotion) updateSparks(dt);
     drawHead(t);
 
