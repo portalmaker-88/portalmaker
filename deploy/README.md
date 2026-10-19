@@ -47,8 +47,16 @@ bash ~/portalmaker/deploy/update.sh
 - `nginx-site.conf`: Nginx 사이트 설정 (캐시, gzip, 숨김 파일 차단 포함)
 - `setup-server.sh`: 서버 최초 설정 스크립트
 - `update.sh`: 서버에서 git pull 후 사이트에 반영하는 스크립트
+- `fix-tunnel.sh`: Cloudflare 터널 사용 시 무한 리디렉션을 없애는 스크립트
 
 ## 문제가 생기면
 - 설정 검사: `sudo nginx -t`
 - 에러 로그: `sudo tail -n 50 /var/log/nginx/error.log`
 - 인증서 상태: `sudo certbot certificates`
+
+## Cloudflare 터널을 쓰는 경우 (ERR_TOO_MANY_REDIRECTS)
+서버 앞에 Cloudflare 터널(cloudflared)이 있어 `http://localhost:80` 으로 연결하면, certbot 이 넣은 http→https 전환 때문에 무한 리디렉션이 생깁니다.
+`/var/log/nginx/access.log` 에 `127.0.0.1 ... 301` 이 찍히면 이 경우입니다. 아래 한 줄로 전환을 없애세요.
+```bash
+sudo bash ~/portalmaker/deploy/fix-tunnel.sh button.backtohome.kr
+```
