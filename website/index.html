@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>사이트 이름</title>
   <meta name="description" content="사이트 설명을 여기에 적어주세요.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Noto+Sans+KR:wght@800&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -29,7 +32,8 @@
 
   <main id="main">
     <section class="hero" id="top">
-      <div class="container">
+      <canvas class="hero-canvas" id="hero-cone" role="img" aria-label="작은 카드들이 나선을 그리며 모인 원뿔이 별똥별을 따라 날아가는 애니메이션"></canvas>
+      <div class="container hero-copy">
         <p class="eyebrow">태그라인</p>
         <h1>메인 헤드라인이 들어갈 자리</h1>
         <p class="lead">한두 문장으로 사이트를 소개하는 문구가 들어갑니다.</p>
@@ -97,5 +101,6 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/cone.js"></script>
 </body>
 </html>

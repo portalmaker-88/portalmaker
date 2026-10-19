@@ -91,10 +91,39 @@ p { margin: 0 0 1rem; }
 .btn-ghost { border-color: var(--color-border); }
 
 /* ===== 섹션 ===== */
-.hero { padding: calc(var(--space-section) * 1.3) 0 var(--space-section); text-align: center; }
 .eyebrow { color: var(--color-primary); font-weight: 600; letter-spacing: .05em; }
 .lead { font-size: 1.15rem; color: var(--color-muted); max-width: 40ch; margin-inline: auto; }
 .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+
+/* ===== 메인 hero: 원뿔 모션그래픽 (라이트/다크 모드와 상관없이 항상 어두운 배경) ===== */
+.hero {
+  --hero-bg: #0a0a0b;
+  --hero-text: #ece6da;
+  --hero-muted: #8f897d;
+  --hero-line: #3a3833;
+  --font-hero: "Noto Sans KR", var(--font-sans);
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100svh - var(--header-h));
+  padding: clamp(2rem, 7vh, 5rem) 0 var(--space-section);
+  background: var(--hero-bg);
+  color: var(--hero-text);
+  color-scheme: dark;
+}
+.hero-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  touch-action: pan-y;
+}
+.hero-copy { position: relative; pointer-events: none; }
+.hero-copy a { pointer-events: auto; }
+.hero .eyebrow { font-family: var(--font-mono); font-size: .8rem; font-weight: 400; letter-spacing: .08em; color: var(--hero-muted); margin-bottom: .6rem; }
+.hero h1 { font-family: var(--font-hero); font-weight: 800; font-size: clamp(2.1rem, 9vw, 4.75rem); line-height: 1.05; max-width: 14ch; text-wrap: balance; }
+.hero .lead { font-family: var(--font-mono); font-size: .85rem; color: var(--hero-muted); max-width: 34ch; margin-inline: 0; }
+.hero .hero-actions { justify-content: flex-start; margin-top: 1.5rem; }
+.hero .btn-ghost { border-color: var(--hero-line); color: var(--hero-text); }
 
 .section { padding: var(--space-section) 0; }
 .section-alt { background: var(--color-bg-alt); }
