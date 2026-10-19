@@ -169,22 +169,28 @@
     ctx.globalCompositeOperation = 'source-over';
   }
 
-  // 입구 테두리의 와이어 링 (가는 관을 둥글게 만 모양), 원뿔과 같이 회전
-  function drawRim() {
-    const rt = 0.045, segs = 72, tubes = 36, tseg = 10;
+  // 입구 테두리의 와이어 링 (가는 관을 둥글게 만 모양), 원뿔과 같이 회전.
+  // 카드가 다 모인 뒤(약 3.6초) 한 바퀴 둘러 그려지며 나타남
+  function drawRim(t) {
+    const p = Math.min(1, Math.max(0, (t - 3.6) / 1.4));
+    if (p <= 0) return;
+    const sweep = 1 - Math.pow(1 - p, 3);
+    const rt = 0.045, segs = Math.max(1, Math.round(72 * sweep)), tubes = 36, tseg = 10;
+    const end = sweep * Math.PI * 2;
     const pt = (phi, psi) => project(L / 2 + rt * Math.cos(psi), R + rt * Math.sin(psi), phi + spin);
-    ctx.strokeStyle = 'rgba(236,230,218,0.38)';
+    ctx.strokeStyle = `rgba(236,230,218,${0.38 * Math.min(1, p * 2)})`;
     ctx.lineWidth = 0.7;
     ctx.beginPath();
     for (let k = 0; k < 4; k++) {
       const psi = k * Math.PI / 2;
       for (let i = 0; i <= segs; i++) {
-        const [x, y] = pt(i / segs * Math.PI * 2, psi);
+        const [x, y] = pt(i / segs * end, psi);
         i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
       }
     }
     for (let i = 0; i < tubes; i++) {
       const phi = i / tubes * Math.PI * 2;
+      if (phi > end) break;
       for (let j = 0; j <= tseg; j++) {
         const [x, y] = pt(phi, j / tseg * Math.PI * 2);
         j ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
@@ -307,7 +313,7 @@
       ctx.fillRect(px - w / 2, py - h / 2, w, h);
     }
     ctx.globalAlpha = 1;
-    drawRim();
+    drawRim(t);
     if (!reduceMotion) updateSparks(dt);
     drawHead(t);
 
