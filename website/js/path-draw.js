@@ -1,5 +1,6 @@
 // 글자 외곽선을 따라 선이 그려지는 애니메이션 (React 컴포넌트 path-drawing-portfolio-hero 를 순수 JS로 옮김)
 // 사용법: <div data-path-draw data-text="이름" data-from="#색" data-to="#색"></div>
+// 기본은 한 번 그리고 멈춤. 계속 반복하려면 data-loop 를 붙임
 (() => {
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -80,6 +81,7 @@
     const toColor = host.dataset.to || '#f5576c';
     const durationSec = Number(host.dataset.duration) || 5.5;
     const strokeWidth = Number(host.dataset.stroke) || 2.4;
+    const loop = 'loop' in host.dataset;
     // 글자 수에 따라 크기와 viewBox를 고름 (원본 컴포넌트와 같은 규칙)
     const n = display.length;
     const fontSize = n > 12 ? 72 : n > 8 ? 96 : 148;
@@ -109,16 +111,24 @@
 
     if (reduceMotion) { svg.style.visibility = 'visible'; return; }
 
-    let raf = 0, running = false, dashLength = 0, offset = 0, last = 0;
+    let raf = 0, running = false, done = false, dashLength = 0, offset = 0, last = 0;
     const tick = (now) => {
       const dt = Math.min(48, now - last);
       last = now;
       offset -= (dashLength / (Math.max(0.8, durationSec) * 1000)) * dt;
-      if (offset <= 0) offset = dashLength;   // 다 그려지는 순간 처음부터 다시
+      if (offset <= 0) {
+        if (!loop) {                          // 다 그려지면 완성된 글자로 남김
+          textEl.style.strokeDasharray = 'none';
+          textEl.style.strokeDashoffset = '0';
+          done = true; running = false;
+          return;
+        }
+        offset = dashLength;                  // 반복: 다 그려지는 순간 처음부터 다시
+      }
       textEl.style.strokeDashoffset = String(offset);
       raf = requestAnimationFrame(tick);
     };
-    const play = () => { if (running || !dashLength) return; running = true; last = performance.now(); raf = requestAnimationFrame(tick); };
+    const play = () => { if (running || done || !dashLength) return; running = true; last = performance.now(); raf = requestAnimationFrame(tick); };
     const pause = () => { running = false; cancelAnimationFrame(raf); };
 
     const start = (dash) => {
