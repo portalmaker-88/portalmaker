@@ -140,6 +140,8 @@ p { margin: 0 0 1rem; }
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
   gap: 12px;
 }
+/* 30개 묶음 사이 여백 */
+.button-grid + .button-grid { margin-top: clamp(2.5rem, 6vw, 4rem); }
 .tile {
   display: flex; align-items: center; justify-content: center;
   height: 88px; padding: 0 1rem;
