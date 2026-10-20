@@ -46,6 +46,7 @@
   const TRAIL = 24;           // 꼬리 길이 (점 개수)
   const PARALLAX = 0.25;      // 스크롤할 때 입자가 따라 움직이는 비율
   const LINE = 1.1;
+  const BANDS = 6;            // 꼬리를 몇 단계 밝기로 나눠 그릴지
 
   // 원뿔과 같은 색: 따뜻한 흰색 위주, 드물게 빨강·초록
   const colors = [
@@ -65,12 +66,12 @@
   let W = 0, H = 0, dpr = 1, N = 0, drawn = 0;
   let xs, ys, len, head, life, col, dying;
   function setup() {
-    dpr = Math.min(1.5, devicePixelRatio || 1);
+    dpr = 1;  // 흐린 가는 선이라 고해상도로 그릴 필요가 없음 (큰 화면에서 가장 큰 부담)
     W = innerWidth; H = Math.max(innerHeight, screen.height || 0);
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
     canvas.style.height = H + 'px';
-    const want = Math.round(Math.min(900, Math.max(220, (W * H) / 1300)));
+    const want = Math.round(Math.min(650, Math.max(220, (W * H) / 1300)));
     if (want !== N) {
       N = want; drawn = N;
       xs = new Float32Array(N * TRAIL); ys = new Float32Array(N * TRAIL);
@@ -127,33 +128,37 @@
     ctx.clearRect(0, 0, W, H);
     ctx.lineWidth = LINE;
     ctx.lineCap = 'round';
-    // 같은 색·같은 꼬리 위치끼리 한 번에 그림 (색 6 × 꼬리 23 번만 stroke)
+    // 같은 색·같은 꼬리 구간끼리 한 번에 그림 (색 6 × 구간 BANDS 번만 stroke)
+    const per = (TRAIL - 1) / BANDS;
     for (let c = 0; c < colors.length; c++) {
-      for (let s = 1; s < TRAIL; s++) {
+      for (let band = 0; band < BANDS; band++) {
+        const s0 = 1 + Math.round(band * per), s1 = 1 + Math.round((band + 1) * per);
         ctx.beginPath();
         let any = false;
         for (let i = 0; i < drawn; i++) {
-          if (col[i] !== c || len[i] <= s) continue;
-          // s=1은 머리 쪽 선분, 클수록 꼬리 쪽
-          const b = i * TRAIL;
-          const p = (head[i] - s + 1 + TRAIL) % TRAIL, q = (head[i] - s + TRAIL) % TRAIL;
+          if (col[i] !== c || len[i] <= s0) continue;
+          // s=1은 머리 쪽 선분, 클수록 꼬리 쪽. 한 구간은 이어진 선 하나로 그림
+          const b = i * TRAIL, end = Math.min(s1, len[i]);
+          let p = (head[i] - s0 + 1 + TRAIL) % TRAIL;
           ctx.moveTo(xs[b + p], ys[b + p]);
-          ctx.lineTo(xs[b + q], ys[b + q]);
+          for (let s = s0; s < end; s++) {
+            p = (head[i] - s + TRAIL) % TRAIL;
+            ctx.lineTo(xs[b + p], ys[b + p]);
+          }
           any = true;
         }
         if (!any) continue;
-        const f = 1 - (s - 1) / (TRAIL - 1);
+        const f = 1 - band / BANDS;
         ctx.strokeStyle = `rgba(${colors[c].c},${(colors[c].a * f * f).toFixed(3)})`;
         ctx.stroke();
       }
     }
   }
 
-  // 히어로가 화면을 다 가리고 있으면 굳이 그리지 않음
+  // 히어로가 화면 대부분을 가리고 있으면 굳이 그리지 않음 (히어로 원뿔과 동시에 돌지 않게)
   function covered() {
     if (!hero) return false;
-    const r = hero.getBoundingClientRect();
-    return r.top <= 0 && r.bottom >= innerHeight;
+    return hero.getBoundingClientRect().bottom > innerHeight * 0.8;
   }
 
   let raf = 0, prev = 0, slow = 0;

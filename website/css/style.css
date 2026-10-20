@@ -73,8 +73,8 @@ p { margin: 0 0 1rem; }
 /* ===== 헤더 / 내비게이션 ===== */
 .site-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
-  background: color-mix(in srgb, var(--color-bg) 90%, transparent);
-  backdrop-filter: blur(8px);
+  /* 뒤에서 캔버스가 계속 움직여서 흐림(blur) 효과는 뺌: 매 프레임 다시 계산돼 PC에서 버벅임 */
+  background: color-mix(in srgb, var(--color-bg) 96%, transparent);
   border-bottom: 1px solid var(--color-border);
 }
 .header-inner { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; }

@@ -30,13 +30,16 @@
   };
 
   // 따뜻한 흰색 위주, 드물게 빨강·초록
-  const palette = ['#ece6da', '#ddd5c4', '#c9c0ad', '#b3aa98'];
+  // 카드에는 색 번호를 저장 (COLORS의 순서)
+  const COLORS = ['#ece6da', '#ddd5c4', '#c9c0ad', '#b3aa98', '#c8463c', '#5f9a6e'];
   function pickColor() {
     const r = Math.random();
-    if (r < 0.025) return '#c8463c';
-    if (r < 0.04) return '#5f9a6e';
-    return palette[(Math.random() * palette.length) | 0];
+    if (r < 0.025) return 4;
+    if (r < 0.04) return 5;
+    return (Math.random() * 4) | 0;
   }
+  const ALPHA_STEPS = 12;
+  const buckets = Array.from({ length: COLORS.length * ALPHA_STEPS }, () => []);
 
   let cards = [];
   function build() {
@@ -88,7 +91,7 @@
   // 화면 크기
   let W = 0, H = 0, dpr = 1, focal = 1, cx = 0, cy = 0;
   function resize() {
-    dpr = Math.min(2, devicePixelRatio || 1);
+    dpr = Math.min(isPhone ? 2 : 1.5, devicePixelRatio || 1);
     W = canvas.clientWidth; H = canvas.clientHeight;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -318,9 +321,20 @@
       if (px < -10 || px > W + 10 || py < -10 || py > H + 10) continue;
       const depth = Math.min(1, Math.max(0, (wz + 1.3) / 2.6));
       const w = CARD_W * s * c.aspect, h = CARD_H * s;
-      ctx.globalAlpha = (c.loose ? 0.55 : 0.22 + 0.78 * depth) * fade * (0.3 + 0.7 * Math.min(1, p * 1.4));
-      ctx.fillStyle = c.color;
-      ctx.fillRect(px - w / 2, py - h / 2, w, h);
+      const alpha = (c.loose ? 0.55 : 0.22 + 0.78 * depth) * fade * (0.3 + 0.7 * Math.min(1, p * 1.4));
+      const lv = Math.min(ALPHA_STEPS - 1, Math.round(alpha * (ALPHA_STEPS - 1)));
+      if (lv > 0) buckets[c.color * ALPHA_STEPS + lv].push(px - w / 2, py - h / 2, w, h);
+    }
+    // 같은 색·비슷한 투명도끼리 모아 한 번에 칠함 (카드마다 색·투명도를 바꾸면 PC 큰 화면에서 느려짐)
+    for (let b = 0; b < buckets.length; b++) {
+      const q = buckets[b];
+      if (!q.length) continue;
+      ctx.globalAlpha = (b % ALPHA_STEPS) / (ALPHA_STEPS - 1);
+      ctx.fillStyle = COLORS[(b / ALPHA_STEPS) | 0];
+      ctx.beginPath();
+      for (let j = 0; j < q.length; j += 4) ctx.rect(q[j], q[j + 1], q[j + 2], q[j + 3]);
+      ctx.fill();
+      q.length = 0;
     }
     ctx.globalAlpha = 1;
     drawRim(t);
@@ -354,8 +368,8 @@
 
   addEventListener('resize', () => { if (resize()) build(); buildStreaks(); if (reduceMotion) frame(performance.now()); });
   resize();
-  // 원뿔이 길어진 만큼 PC 카드 수도 늘림 (최대 8,000개, 느리면 자동으로 줄어듦)
-  if (!isPhone) state.count = Math.min(8000, Math.round(5500 * L / 2 / 100) * 100);
+  // 원뿔이 길어진 만큼 PC 카드 수도 늘림 (최대 6,500개, 느리면 자동으로 줄어듦)
+  if (!isPhone) state.count = Math.min(6500, Math.round(5500 * L / 2 / 100) * 100);
   buildStreaks();
   build();
   running = true;
