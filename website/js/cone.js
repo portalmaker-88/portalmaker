@@ -9,15 +9,17 @@
 
   // 원뿔 치수 (월드 단위). 꼭지는 오른쪽(약간 아래), 넓은 입구는 왼쪽
   // 꼭지 앞의 별똥별을 따라 날아가는 것처럼 보이지만 원뿔 자체는 제자리
-  const L = 2.0, R = 1.25, R0 = 0.04;
-  const RINGS = 36;            // 꼭지에서 입구까지 촘촘히 쌓인 고리 수
+  // 길이 L은 화면 비율에 따라 바뀜: 가로로 넓은 PC 화면에서는 더 길게
+  let L = 2.0;
+  const R = 1.25, R0 = 0.04;
+  let RINGS = 36;              // 꼭지에서 입구까지 촘촘히 쌓인 고리 수 (길이에 비례)
   const CARD_W = 0.015, CARD_H = 0.021;
   // 카메라: 옆에서 보다가 천천히 돌아 입구 안쪽을 들여다보고 다시 돌아옴
   const CAM_PERIOD = 36;      // 한 번 오가는 데 걸리는 초
   let camDist = 5, camYaw = 0, camPitch = 0;
   const rAt = (a) => R0 + (R - R0) * ((a + L / 2) / L);
   const LOOSE = 0.13;         // 원뿔에 붙지 않고 떠다니는 비율
-  const LOOSE_LO = -0.3, LOOSE_HI = L / 2 + 1.6;
+  let LOOSE_LO = -0.3, LOOSE_HI = L / 2 + 1.6;
 
   const isPhone = Math.min(innerWidth, innerHeight) < 700;
   const state = {
@@ -92,13 +94,21 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const portrait = H > W;
     focal = portrait ? Math.min(W * 2.3, H * 1.05) : Math.min(W * 0.75, H * 1.3);
+    // 가로 화면은 비율만큼 원뿔을 늘림 (최대 1.8배). 길이가 바뀌면 true를 돌려 카드를 다시 배치하게 함
+    const want = portrait ? 2.0 : 2.0 * Math.min(1.8, Math.max(1, (W / H) * 0.75));
+    if (Math.abs(want - L) < 0.05) return false;
+    L = want;
+    RINGS = Math.round(36 * L / 2);
+    LOOSE_HI = L / 2 + 1.6;
+    HEAD_A = -L / 2 - 0.16; TAIL_A = L / 2 + 1.4;
+    return true;
   }
-  // 원뿔 가운데가 화면의 정해진 자리(휴대폰: 제목 아래)에 오도록 맞춤
+  // 휴대폰: 원뿔 가운데를 고정. 가로 화면: 혜성 머리를 오른쪽 끝 가까이에 고정
   function anchor() {
     const portrait = H > W;
-    const tx = portrait ? W * 0.4 : W * 0.58;
+    const tx = portrait ? W * 0.4 : W * 0.86;
     const ty = portrait ? H * 0.63 : H * 0.56;
-    coneToWorld(0, 0, 0, out);
+    coneToWorld(portrait ? 0 : HEAD_A, 0, 0, out);
     const s = focal / (camDist - out.z);
     cx = tx - out.x * s;
     cy = ty + out.y * s;
@@ -137,7 +147,7 @@
   };
 
   // 별똥별: 꼭지 바로 앞의 머리, 축을 따라 입구 뒤로 길게 빠지는 꼬리
-  const HEAD_A = -L / 2 - 0.16, TAIL_A = L / 2 + 1.4;
+  let HEAD_A = -L / 2 - 0.16, TAIL_A = L / 2 + 1.4;
   function drawTail() {
     const [hx, hy] = project(HEAD_A, 0, 0);
     const [tx, ty] = project(TAIL_A, 0, 0);
@@ -342,8 +352,10 @@
   });
   ['pointerup', 'pointercancel', 'pointerleave'].forEach((n) => canvas.addEventListener(n, () => { lastX = null; }));
 
-  addEventListener('resize', () => { resize(); buildStreaks(); if (reduceMotion) frame(performance.now()); });
+  addEventListener('resize', () => { if (resize()) build(); buildStreaks(); if (reduceMotion) frame(performance.now()); });
   resize();
+  // 원뿔이 길어진 만큼 PC 카드 수도 늘림 (최대 8,000개, 느리면 자동으로 줄어듦)
+  if (!isPhone) state.count = Math.min(8000, Math.round(5500 * L / 2 / 100) * 100);
   buildStreaks();
   build();
   running = true;
