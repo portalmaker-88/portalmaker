@@ -11,11 +11,15 @@
   <link rel="stylesheet" href="css/style.css?v=dev">
 </head>
 <body>
-  <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+  <a class="skip-link" href="#main" data-i18n="skip">본문으로 건너뛰기</a>
 
   <header class="site-header">
     <div class="container header-inner">
       <a class="logo" href="#top">LOGO</a>
+      <div class="lang-switch" role="group" aria-label="언어 선택" data-i18n-label="langLabel">
+        <button type="button" class="lang-btn" data-lang="ko" aria-pressed="true" aria-label="한국어" title="한국어"><svg viewBox="-36 -24 72 48" aria-hidden="true"><path d="M-36-24h72v48h-72z" fill="#fff"/><g transform="rotate(-56.3099325)"><g id="kr-b2"><path id="kr-b" d="M-6-26H6v2H-6zm0 3H6v2H-6zm0 3H6v2H-6z"/><use href="#kr-b" y="44"/></g><path stroke="#fff" d="M0,17v10"/><path fill="#cd2e3a" d="M0-12A12 12 0 0 1 0 12z"/><path fill="#0047a0" d="M0-12A12 12 0 0 0 0 12 6 6 0 0 0 0 0z"/><circle cy="-6" fill="#cd2e3a" r="6"/></g><g transform="rotate(-123.6900675)"><use href="#kr-b2"/><path stroke="#fff" d="M0-23.5v3M0,17v3.5M0,23.5v3"/></g></svg></button>
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false" aria-label="English" title="English"><svg viewBox="0 0 57 19.5" preserveAspectRatio="none" aria-hidden="true"><rect width="57" height="19.5" fill="#fff"/><rect y="0" width="57" height="1.5" fill="#b22234"/><rect y="3" width="57" height="1.5" fill="#b22234"/><rect y="6" width="57" height="1.5" fill="#b22234"/><rect y="9" width="57" height="1.5" fill="#b22234"/><rect y="12" width="57" height="1.5" fill="#b22234"/><rect y="15" width="57" height="1.5" fill="#b22234"/><rect y="18" width="57" height="1.5" fill="#b22234"/><rect width="22.8" height="10.5" fill="#3c3b6e"/><circle cx="2.2" cy="2.0" r=".7" fill="#fff"/><circle cx="6.6" cy="2.0" r=".7" fill="#fff"/><circle cx="11.0" cy="2.0" r=".7" fill="#fff"/><circle cx="15.4" cy="2.0" r=".7" fill="#fff"/><circle cx="19.8" cy="2.0" r=".7" fill="#fff"/><circle cx="2.2" cy="5.6" r=".7" fill="#fff"/><circle cx="6.6" cy="5.6" r=".7" fill="#fff"/><circle cx="11.0" cy="5.6" r=".7" fill="#fff"/><circle cx="15.4" cy="5.6" r=".7" fill="#fff"/><circle cx="19.8" cy="5.6" r=".7" fill="#fff"/><circle cx="2.2" cy="9.2" r=".7" fill="#fff"/><circle cx="6.6" cy="9.2" r=".7" fill="#fff"/><circle cx="11.0" cy="9.2" r=".7" fill="#fff"/><circle cx="15.4" cy="9.2" r=".7" fill="#fff"/><circle cx="19.8" cy="9.2" r=".7" fill="#fff"/><circle cx="2.2" cy="12.8" r=".7" fill="#fff"/><circle cx="6.6" cy="12.8" r=".7" fill="#fff"/><circle cx="11.0" cy="12.8" r=".7" fill="#fff"/><circle cx="15.4" cy="12.8" r=".7" fill="#fff"/><circle cx="19.8" cy="12.8" r=".7" fill="#fff"/></svg></button>
+      </div>
     </div>
   </header>
 
@@ -23,18 +27,18 @@
     <section class="hero" id="top">
       <canvas class="hero-canvas" id="hero-cone" role="img" aria-label="작은 카드들이 나선을 그리며 모인 원뿔이 별똥별을 따라 날아가는 애니메이션"></canvas>
       <div class="container hero-copy">
-        <p class="eyebrow">태그라인</p>
+        <p class="eyebrow" data-i18n="eyebrow">태그라인</p>
         <h1 class="sr-only">PORTALMAKER</h1>
         <div class="hero-brand" data-path-draw data-text="PORTALMAKER" data-from="#fff2d0" data-to="#c8463c" data-stroke="4"></div>
-        <p class="lead">한두 문장으로 사이트를 소개하는 문구가 들어갑니다.</p>
+        <p class="lead" data-i18n="lead">한두 문장으로 사이트를 소개하는 문구가 들어갑니다.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#buttons">주요 버튼</a>
-          <a class="btn btn-ghost" href="#buttons">보조 버튼</a>
+          <a class="btn btn-primary" href="#buttons" data-i18n="primary">주요 버튼</a>
+          <a class="btn btn-ghost" href="#buttons" data-i18n="secondary">보조 버튼</a>
         </div>
       </div>
     </section>
 
-    <section class="buttons" id="buttons" aria-label="버튼 목록">
+    <section class="buttons" id="buttons" aria-label="버튼 목록" data-i18n-label="buttonsLabel">
       <div class="container">
         <ul class="button-grid">
           <li><a class="tile" href="#">버튼 01</a></li>
@@ -143,6 +147,7 @@
   </footer>
 
   <script src="js/main.js?v=dev"></script>
+  <script src="js/i18n.js?v=dev"></script>
   <script src="js/cone.js?v=dev"></script>
   <script src="js/path-draw.js?v=dev"></script>
   <script src="js/flow-bg.js?v=dev"></script>

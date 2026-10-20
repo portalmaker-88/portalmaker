@@ -172,3 +172,19 @@ p { margin: 0 0 1rem; }
 .footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .footer-inner p { margin: 0; }
 
+
+/* ===== 언어 전환 (우측 상단 국기 버튼) ===== */
+.lang-switch { display: flex; gap: 8px; }
+.lang-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 36px; padding: 0;
+  border: 1px solid transparent; border-radius: 6px;
+  background: none; cursor: pointer;
+  opacity: .5;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s, border-color .15s;
+}
+.lang-btn svg { display: block; width: 33px; height: 22px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .25); }
+.lang-btn:hover { opacity: .85; }
+.lang-btn[aria-pressed="true"] { opacity: 1; border-color: var(--color-border); }
+.lang-btn:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
