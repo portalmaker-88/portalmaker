@@ -85,6 +85,8 @@
     const ringOrder = o.loose ? Math.random() : o.ring / RINGS;
     o.delay = 0.15 + ringOrder * 1.7 + Math.random() * 0.45;
     o.aspect = 0.8 + Math.random() * 0.5;
+    // 고리 카드: 반지름과 각도의 cos·sin을 미리 계산해 두고 회전은 덧셈 공식으로
+    if (!o.loose) { o.r = rAt(o.a); o.cp = Math.cos(o.phi); o.sp = Math.sin(o.phi); }
     return o;
   }
 
@@ -123,19 +125,25 @@
   function coneToWorld(a, r, phi, o) {
     localToWorld(a, r * Math.cos(phi), r * Math.sin(phi), o);
   }
+  // 회전에 쓰는 cos·sin은 프레임마다 한 번만 계산 (카드 수천 개마다 다시 계산하지 않음)
+  const YAW = -0.3, cYaw = Math.cos(YAW), sYaw = Math.sin(YAW);
+  const ROLL = Math.PI - state.tilt * Math.PI / 180, cRoll = Math.cos(ROLL), sRoll = Math.sin(ROLL);
+  let cCy = 1, sCy = 0, cCp = 1, sCp = 0;
+  function updateCamTrig() {
+    cCy = Math.cos(camYaw); sCy = Math.sin(camYaw);
+    cCp = Math.cos(camPitch); sCp = Math.sin(camPitch);
+  }
   function localToWorld(a, y0, z0, o) {
-    const yaw = -0.3;
-    const x1 = a * Math.cos(yaw) + z0 * Math.sin(yaw);
-    const z1 = -a * Math.sin(yaw) + z0 * Math.cos(yaw);
-    const roll = Math.PI - state.tilt * Math.PI / 180;
-    const x2 = x1 * Math.cos(roll) - y0 * Math.sin(roll);
-    const y2 = x1 * Math.sin(roll) + y0 * Math.cos(roll);
+    const x1 = a * cYaw + z0 * sYaw;
+    const z1 = -a * sYaw + z0 * cYaw;
+    const x2 = x1 * cRoll - y0 * sRoll;
+    const y2 = x1 * sRoll + y0 * cRoll;
     // 카메라 시점: 세로축으로 돌고(yaw) 살짝 위아래로(pitch)
-    const x3 = x2 * Math.cos(camYaw) + z1 * Math.sin(camYaw);
-    const z3 = -x2 * Math.sin(camYaw) + z1 * Math.cos(camYaw);
+    const x3 = x2 * cCy + z1 * sCy;
+    const z3 = -x2 * sCy + z1 * cCy;
     o.x = x3;
-    o.y = y2 * Math.cos(camPitch) - z3 * Math.sin(camPitch);
-    o.z = y2 * Math.sin(camPitch) + z3 * Math.cos(camPitch);
+    o.y = y2 * cCp - z3 * sCp;
+    o.z = y2 * sCp + z3 * cCp;
   }
 
   const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -237,12 +245,14 @@
 
   // 배경의 먼 별: 비행 반대 방향으로 흘러가는 짧은 선 (원뿔은 제자리, 주변이 지나감)
   let streaks = [];
+  const STREAK_STEPS = 6;
+  const streakBuckets = Array.from({ length: STREAK_STEPS }, () => []);
   function buildStreaks() {
     const n = Math.round((W * H) / (isPhone ? 5200 : 7000));
     streaks = Array.from({ length: n }, () => ({
       u: Math.random(), v: Math.random() - 0.5,
       speed: 0.08 + Math.pow(Math.random(), 2) * 0.55,
-      alpha: 0.15 + Math.random() * 0.45,
+      band: (Math.random() * STREAK_STEPS) | 0,
     }));
   }
   function drawStreaks(dt) {
@@ -253,6 +263,8 @@
     const span = Math.hypot(W, H) * 1.1;
     ctx.strokeStyle = '#ece6da';
     ctx.lineWidth = 1;
+    // 투명도가 비슷한 선끼리 모아 한 번에 그림
+    for (let b = 0; b < STREAK_STEPS; b++) streakBuckets[b].length = 0;
     for (const st of streaks) {
       st.u -= st.speed * dt;
       if (st.u < 0) { st.u += 1; st.v = Math.random() - 0.5; }
@@ -260,13 +272,31 @@
       const x = W / 2 + dx * along - dy * across;
       const y = H / 2 + dy * along + dx * across;
       const len = 6 + st.speed * 140;
-      ctx.globalAlpha = st.alpha;
-      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dx * len, y - dy * len); ctx.stroke();
+      streakBuckets[st.band].push(x, y, x - dx * len, y - dy * len);
+    }
+    for (let b = 0; b < STREAK_STEPS; b++) {
+      const q = streakBuckets[b];
+      if (!q.length) continue;
+      ctx.globalAlpha = 0.15 + 0.45 * (b + 0.5) / STREAK_STEPS;
+      ctx.beginPath();
+      for (let j = 0; j < q.length; j += 4) { ctx.moveTo(q[j], q[j + 1]); ctx.lineTo(q[j + 2], q[j + 3]); }
+      ctx.stroke();
     }
     ctx.globalAlpha = 1;
   }
 
+  // 120·144Hz 모니터에서는 화면이 바뀔 때마다 그리지 않고 약 60fps로 맞춤 (일정한 간격으로 건너뜀)
+  let tick = 0, every = 1, gaps = [], prevNow = 0;
+  function paced(now) {
+    if (prevNow && gaps.length < 30) {
+      gaps.push(now - prevNow);
+      if (gaps.length === 30) every = Math.max(1, Math.round(16.7 / gaps.sort((a, b) => a - b)[15]));
+    }
+    prevNow = now;
+    return tick++ % every === 0;
+  }
   function frame(now) {
+    if (!reduceMotion && !paced(now)) { if (running) rafId = requestAnimationFrame(frame); return; }
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     const t = reduceMotion ? 99 : (now - start) / 1000;
@@ -289,8 +319,10 @@
       camPitch = 0.06 * Math.sin(t * Math.PI * 2 / CAM_PERIOD);
       camDist = 5 - 0.175 * k;
     }
+    updateCamTrig();
     ctx.clearRect(0, 0, W, H);
     anchor();
+    const cS = Math.cos(spin), sS = Math.sin(spin);
     if (!reduceMotion) drawStreaks(dt);
     drawTail();
 
@@ -305,7 +337,7 @@
         wx = out.x; wy = out.y; wz = out.z;
       } else {
         // 고정된 고리 그대로 축을 중심으로 매끈하게 회전
-        coneToWorld(c.a, rAt(c.a), c.phi + spin, out);
+        localToWorld(c.a, c.r * (c.cp * cS - c.sp * sS), c.r * (c.sp * cS + c.cp * sS), out);
         wx = out.x; wy = out.y; wz = out.z;
       }
       const p = Math.min(1, Math.max(0, (t - c.delay) / 1.5));
@@ -353,7 +385,9 @@
 
   // 화면 밖이거나 다른 탭이면 멈춤
   document.addEventListener('visibilitychange', () => document.hidden ? pause() : play());
-  new IntersectionObserver(([e]) => e.isIntersecting ? play() : pause()).observe(canvas);
+  // 위쪽 고정 메뉴 줄 뒤에 히어로 끝자락만 걸쳐 있을 때(버튼 화면)도 안 보이므로 멈춤
+  const headerH = document.querySelector('.site-header')?.offsetHeight || 0;
+  new IntersectionObserver(([e]) => e.isIntersecting ? play() : pause(), { rootMargin: `-${headerH + 1}px 0px 0px 0px` }).observe(canvas);
 
   // 좌우로 끌면 회전 가속
   let lastX = null;

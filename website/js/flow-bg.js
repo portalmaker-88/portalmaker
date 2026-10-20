@@ -43,7 +43,7 @@
   const SCALE = 1 / 380;      // 흐름 장의 크기 (px당 노이즈 단위). 작을수록 물결이 큼
   const SPEED = 0.7;          // 기본 흐름 속도 (60fps 기준 px/프레임)
   const TIME = 0.0011;        // 흐름 장이 변하는 빠르기
-  const TRAIL = 24;           // 꼬리 길이 (점 개수)
+  const TRAIL = 12;           // 꼬리 길이 (점 개수). 약 30fps로 그리므로 점 사이가 넓어 60fps 때 24점과 같은 길이
   const PARALLAX = 0.25;      // 스크롤할 때 입자가 따라 움직이는 비율
   const LINE = 1.1;
   const BANDS = 6;            // 꼬리를 몇 단계 밝기로 나눠 그릴지
@@ -161,14 +161,26 @@
     return hero.getBoundingClientRect().bottom > innerHeight * 0.8;
   }
 
+  // 느린 흐름이라 약 30fps면 충분: 모니터 주사율에 맞춰 일정한 간격으로 건너뜀 (60Hz면 한 번 걸러 한 번)
+  let tick = 0, every = 2, gaps = [], prevNow = 0, gap = 16.7;
+  function paced(now) {
+    if (prevNow && gaps.length < 30) {
+      gaps.push(now - prevNow);
+      if (gaps.length === 30) { gap = gaps.sort((a, b) => a - b)[15]; every = Math.max(1, Math.round(33.3 / gap)); }
+    }
+    prevNow = now;
+    return tick++ % every === 0;
+  }
+
   let raf = 0, prev = 0, slow = 0;
   function frame(now) {
     raf = requestAnimationFrame(frame);
-    const dt = prev ? Math.min(50, now - prev) : 16.7;
+    if (!paced(now)) return;
+    const dt = prev ? Math.min(80, now - prev) : 33.3;
     prev = now;
     if (covered()) return;
     // 계속 느리면 그리는 입자 수를 줄임
-    if (dt > 24) { if (++slow > 45 && drawn > 120) { drawn = Math.round(drawn * 0.85); slow = 0; } }
+    if (dt > every * gap * 1.45) { if (++slow > 45 && drawn > 120) { drawn = Math.round(drawn * 0.85); slow = 0; } }
     else slow = Math.max(0, slow - 1);
     step(dt / 16.7);
     draw();
