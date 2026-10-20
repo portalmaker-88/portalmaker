@@ -49,9 +49,10 @@ body {
   font-family: var(--font-sans);
   line-height: 1.6;
   color: var(--color-text);
-  background: var(--color-bg);
+  background: transparent; /* 바탕은 html 색 + 흐름 캔버스 */
   word-break: keep-all;
 }
+html { background: #0a0a0b; }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
 h1, h2, h3 { font-family: var(--font-heading); line-height: 1.25; margin: 0 0 1rem; }
@@ -127,10 +128,19 @@ p { margin: 0 0 1rem; }
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
+/* ===== 페이지 전체 바탕 모션그래픽 (js/flow-bg.js) ===== */
+.flow-bg {
+  position: fixed; top: 0; left: 0;
+  width: 100%;
+  z-index: -1;
+  pointer-events: none;
+  display: block;
+}
+
 /* ===== 버튼 목록: 모든 버튼이 같은 크기 ===== */
 .buttons {
   padding: var(--space-section) 0;
-  background: #0a0a0b;
+  background: transparent;
   color: #ece6da;
   color-scheme: dark;
 }
@@ -146,7 +156,7 @@ p { margin: 0 0 1rem; }
   display: flex; align-items: center; justify-content: center;
   height: 88px; padding: 0 1rem;
   border: 1px solid #3a3833; border-radius: var(--radius);
-  background: #141413;
+  background: rgba(20, 20, 19, .8); /* 바탕 흐름이 아주 흐리게 비침 */
   color: inherit; text-decoration: none; text-align: center;
   font-weight: 700; font-size: 1.05rem; line-height: 1.3;
   overflow: hidden;
@@ -158,7 +168,7 @@ p { margin: 0 0 1rem; }
 .tile:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
 
 /* ===== 푸터 ===== */
-.site-footer { padding: 2rem 0; background: #0a0a0b; border-top: 1px solid #3a3833; color: #8f897d; font-size: .9rem; }
+.site-footer { padding: 2rem 0; background: transparent; border-top: 1px solid #3a3833; color: #8f897d; font-size: .9rem; }
 .footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .footer-inner p { margin: 0; }
 
