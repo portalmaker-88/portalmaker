@@ -188,3 +188,20 @@ p { margin: 0 0 1rem; }
 .lang-btn:hover { opacity: .85; }
 .lang-btn[aria-pressed="true"] { opacity: 1; border-color: var(--color-border); }
 .lang-btn:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
+
+/* ===== 프롬프트 복사 알림 ===== */
+.tile.copied { border-color: #c8463c; background: #2a1d1b; }
+.toast {
+  position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+  max-width: calc(100% - 32px);
+  padding: .7rem 1.1rem;
+  border: 1px solid #3a3833; border-radius: 999px;
+  background: #141413; color: #ece6da;
+  font-size: .95rem; font-weight: 600; text-align: center;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .4);
+  opacity: 0; transform: translate(-50%, 12px);
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }

@@ -1,4 +1,4 @@
-// 언어 전환 (한국어 / English) + 구글 스프레드시트에서 버튼 이름 불러오기
+// 언어 전환 (한국어 / English) + 구글 스프레드시트에서 버튼 이름 불러오기 + 버튼 누르면 프롬프트 복사
 //
 // 스프레드시트 열 순서: A 버튼 번호 | B 한글 이름 | C 영어 이름 | D 한글 프롬프트 | E 영어 프롬프트
 // 시트는 "링크가 있는 모든 사용자: 뷰어"로 공유돼 있어야 방문자 브라우저가 읽을 수 있음.
@@ -20,7 +20,10 @@
       secondary: '보조 버튼',
       buttonsLabel: '버튼 목록',
       langLabel: '언어 선택',
-      tile: '버튼'
+      tile: '버튼',
+      copied: '프롬프트를 복사했어요',
+      noPrompt: '아직 입력된 프롬프트가 없어요',
+      copyFail: '복사하지 못했어요. 다시 눌러 주세요'
     },
     en: {
       skip: 'Skip to content',
@@ -30,7 +33,10 @@
       secondary: 'Secondary button',
       buttonsLabel: 'Button list',
       langLabel: 'Choose language',
-      tile: 'Button'
+      tile: 'Button',
+      copied: 'Prompt copied',
+      noPrompt: 'No prompt entered yet',
+      copyFail: 'Could not copy. Please try again'
     }
   };
 
@@ -112,6 +118,54 @@
   try { rows = JSON.parse(store(CACHE_KEY) || '{}') || {}; } catch (e) { rows = {}; }
   var saved = store(LANG_KEY);
   if (LANGS.indexOf(saved) >= 0) lang = saved;
+
+  // 버튼을 누르면 현재 언어의 프롬프트를 클립보드에 복사
+  var toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  document.body.appendChild(toast);
+  var toastTimer;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 1800);
+  }
+
+  // 예전 브라우저나 http 주소에서는 clipboard API가 없어서 임시 입력칸으로 복사
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, text.length);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    ta.remove();
+    return ok;
+  }
+
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return fallbackCopy(text); });
+    }
+    return Promise.resolve(fallbackCopy(text));
+  }
+
+  tiles.forEach(function (tile) {
+    tile.addEventListener('click', function (e) {
+      e.preventDefault();
+      var t = TEXT[lang];
+      var prompt = tile.getAttribute('data-prompt');
+      if (!prompt) { showToast(t.noPrompt); return; }
+      copy(prompt).then(function (ok) {
+        showToast(ok ? t.copied : t.copyFail);
+        if (ok) { tile.classList.add('copied'); setTimeout(function () { tile.classList.remove('copied'); }, 600); }
+      });
+    });
+  });
 
   document.querySelectorAll('.lang-btn').forEach(function (b) {
     b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
