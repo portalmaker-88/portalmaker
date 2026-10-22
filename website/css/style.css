@@ -126,7 +126,7 @@ p { margin: 0 0 1rem; }
   touch-action: pan-y;
 }
 .hero-copy { position: relative; pointer-events: none; }
-.hero-copy a { pointer-events: auto; }
+.hero-copy a, .hero-copy button { pointer-events: auto; }
 .hero .eyebrow { font-family: var(--font-mono); font-size: .8rem; font-weight: 400; letter-spacing: .08em; color: var(--hero-muted); margin-bottom: .6rem; }
 .hero h1 { font-family: var(--font-hero); font-weight: 800; font-size: clamp(2.1rem, 9vw, 4.75rem); line-height: 1.05; max-width: 14ch; text-wrap: balance; }
 .hero .lead { font-family: var(--font-mono); font-size: .85rem; color: var(--hero-muted); max-width: 34ch; margin-inline: 0; }
@@ -245,3 +245,62 @@ html { scroll-snap-type: y mandatory; }
   transition: opacity .2s, transform .2s;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ===== 왼쪽 사이드바 페이지 (주요 버튼으로 열고, 오른쪽 마름모 탭으로 접음) ===== */
+.side-panel {
+  --panel-w: min(440px, calc(100vw - 44px)); /* 접는 탭이 튀어나올 자리를 남김 */
+  position: fixed; top: 0; bottom: 0; left: 0; z-index: 70;
+  width: var(--panel-w);
+  background: #141413; color: #ece6da;
+  border-right: 1px solid #3a3833;
+  box-shadow: 8px 0 32px rgba(0, 0, 0, .45);
+  color-scheme: dark;
+  transform: translateX(calc(-100% - 40px));
+  visibility: hidden;
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), visibility 0s .35s;
+}
+.panel-open .side-panel { transform: none; visibility: visible; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+.side-panel-scroll {
+  height: 100%; overflow-y: auto; overscroll-behavior: contain;
+  padding: max(28px, env(safe-area-inset-top, 0px)) 40px max(28px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  outline: none;
+}
+.side-panel-title { font-family: "Noto Sans KR", var(--font-sans); font-weight: 800; font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: .75rem; }
+.side-panel-intro { color: #8f897d; margin-bottom: 1.75rem; white-space: pre-line; }
+.side-panel-section { padding: 1.1rem 0; border-top: 1px solid #3a3833; }
+.side-panel-section h3 { font-size: 1.05rem; margin-bottom: .4rem; }
+.side-panel-section p { margin: 0; color: #cfc8bb; white-space: pre-line; }
+
+/* 접는 탭: 가로로 누운 마름모(세로 마름모를 90도 돌린 모양)가 사이드바 오른쪽 가장자리에 반쯤 튀어나옴 */
+.panel-tab {
+  position: absolute; top: 50%; right: 0;
+  width: 76px; height: 52px; padding: 0;
+  transform: translate(50%, -50%);
+  border: 0; cursor: pointer;
+  background: #8f897d;      /* 테두리 색: 바깥 마름모 */
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  display: flex; align-items: center; justify-content: flex-end;
+  color: #ece6da;
+  -webkit-tap-highlight-color: transparent;
+}
+.panel-tab::before {        /* 안쪽 마름모 = 탭 바탕 */
+  content: ""; position: absolute; inset: 1.5px 2px;
+  background: #141413;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  transition: background-color .15s;
+}
+.panel-tab svg { position: relative; width: 18px; height: 18px; margin-right: 12px; }
+.panel-tab:hover::before { background: #2a1d1b; }
+.panel-tab:hover { background: #c8463c; }
+.panel-tab:focus-visible { outline: none; background: #c8463c; }
+
+.panel-backdrop {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(0, 0, 0, .5);
+  opacity: 0; transition: opacity .3s;
+}
+.panel-backdrop.show { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .side-panel, .panel-open .side-panel, .panel-backdrop { transition: none; }
+}
