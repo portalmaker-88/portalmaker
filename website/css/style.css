@@ -248,7 +248,7 @@ html { scroll-snap-type: y mandatory; }
 
 /* ===== 왼쪽 사이드바 페이지 (주요 버튼으로 열고, 오른쪽 마름모 탭으로 접음) ===== */
 .side-panel {
-  --panel-w: min(440px, calc(100vw - 44px)); /* 접는 탭이 튀어나올 자리를 남김 */
+  --panel-w: min(480px, calc(100vw - 44px)); /* 접는 탭이 튀어나올 자리를 남김 */
   position: fixed; top: 0; bottom: 0; left: 0; z-index: 70;
   width: var(--panel-w);
   background: #141413; color: #ece6da;
@@ -265,11 +265,51 @@ html { scroll-snap-type: y mandatory; }
   padding: max(28px, env(safe-area-inset-top, 0px)) 40px max(28px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
   outline: none;
 }
-.side-panel-title { font-family: "Noto Sans KR", var(--font-sans); font-weight: 800; font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: .75rem; }
-.side-panel-intro { color: #8f897d; margin-bottom: 1.75rem; white-space: pre-line; }
-.side-panel-section { padding: 1.1rem 0; border-top: 1px solid #3a3833; }
-.side-panel-section h3 { font-size: 1.05rem; margin-bottom: .4rem; }
-.side-panel-section p { margin: 0; color: #cfc8bb; white-space: pre-line; }
+.side-panel-title { font-family: "Noto Sans KR", var(--font-sans); font-weight: 800; font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: .4rem; }
+.side-panel-intro { color: #8f897d; font-size: .9rem; margin-bottom: 1.1rem; }
+
+/* 카테고리 칩: 한 줄로 옆으로 밀어서 보고, 스크롤해도 맨 위에 붙어 있음 */
+.recipe-filters {
+  position: sticky; top: calc(-1 * max(28px, env(safe-area-inset-top, 0px))); z-index: 1;
+  display: flex; gap: 6px;
+  overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+  margin: 0 -40px 0 calc(-1 * max(20px, env(safe-area-inset-left, 0px)));
+  padding: 10px 40px 12px max(20px, env(safe-area-inset-left, 0px));
+  background: #141413; border-bottom: 1px solid #3a3833;
+}
+.recipe-filters::-webkit-scrollbar { display: none; }
+.recipe-chip {
+  flex: none; white-space: nowrap;
+  padding: .3rem .7rem; border: 1px solid #3a3833; border-radius: 999px;
+  background: none; color: #cfc8bb; font: inherit; font-size: .8rem; line-height: 1.3; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.recipe-chip:hover { border-color: #8f897d; }
+.recipe-chip[aria-pressed="true"] { background: #c8463c; border-color: #c8463c; color: #fff; }
+.recipe-chip:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
+
+/* 레시피 카드 */
+.recipe-list { list-style: none; margin: 0; padding: 0; }
+.recipe { padding: 1.1rem 0; border-bottom: 1px solid #2a2927; }
+.recipe-meta { display: flex; align-items: center; gap: .5rem; margin-bottom: .3rem; font-size: .72rem; }
+.recipe-no { color: #c8463c; font-weight: 700; }
+.recipe-cat { color: #8f897d; }
+.recipe-name { font-size: 1rem; line-height: 1.4; margin: 0 0 .7rem; }
+
+/* 단계: 세로로 이어진 줄 위에 번호 배지 */
+.recipe-steps { list-style: none; margin: 0; padding: 0; }
+.recipe-step { position: relative; display: flex; align-items: center; gap: .6rem; min-height: 30px; padding: 2px 0; font-size: .88rem; color: #ece6da; }
+.recipe-step + .recipe-step::before {   /* 앞 단계 배지와 잇는 선 */
+  content: ""; position: absolute; left: 17px; top: -8px; height: 12px; border-left: 1px solid #3a3833;
+}
+.step-badge {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 35px; height: 24px; padding: 0 .4rem; border-radius: 6px;
+  background: #2a1d1b; border: 1px solid #c8463c; color: #ffd9cf;
+  font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .78rem; font-weight: 600;
+}
+.recipe-step.is-input { color: #cfc8bb; }
+.recipe-step.is-input .step-badge { background: none; border: 1px dashed #8f897d; color: #8f897d; font-family: inherit; font-size: .7rem; }
 
 /* 접는 탭: 가로로 누운 마름모(세로 마름모를 90도 돌린 모양)가 사이드바 오른쪽 가장자리에 반쯤 튀어나옴 */
 .panel-tab {
