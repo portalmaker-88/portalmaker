@@ -72,10 +72,16 @@
     tiles.forEach(function (tile, i) {
       var n = i + 1;
       var row = rows[n] || {};
+      // 시트 이름 앞의 "N. "은 떼고, 번호는 따로 작게 보여줌
+      var name = ((lang === 'ko' ? row.ko : row.en) || '').replace(/^\s*\d+\s*[.)]\s*/, '') || t.tile;
+      var num = document.createElement('span');
+      num.className = 'tile-num';
+      num.textContent = pad(n);
       var label = document.createElement('span');
       label.className = 'tile-label';
-      label.textContent = (lang === 'ko' ? row.ko : row.en) || t.tile + ' ' + pad(n);
+      label.textContent = name;
       tile.textContent = '';
+      tile.appendChild(num);
       tile.appendChild(label);
       var prompt = lang === 'ko' ? row.promptKo : row.promptEn;
       if (prompt) {
