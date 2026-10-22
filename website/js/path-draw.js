@@ -1,5 +1,5 @@
 // 글자 외곽선을 따라 선이 그려지는 애니메이션 (React 컴포넌트 path-drawing-portfolio-hero 를 순수 JS로 옮김)
-// 사용법: <div data-path-draw data-text="이름" data-from="#색" data-to="#색"></div>
+// 사용법: <div data-path-draw data-text="이름" (여러 줄은 "첫줄|둘째줄") data-from="#색" data-to="#색"></div>
 // 기본은 한 번 그리고 멈춤. 계속 반복하려면 data-loop 를 붙임
 (() => {
   const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -82,11 +82,14 @@
     const durationSec = Number(host.dataset.duration) || 5.5;
     const strokeWidth = Number(host.dataset.stroke) || 2.4;
     const loop = 'loop' in host.dataset;
-    // 글자 수에 따라 크기와 viewBox를 고름 (원본 컴포넌트와 같은 규칙)
-    const n = display.length;
+    // "|" 로 줄을 나눔. 가장 긴 줄의 글자 수로 크기와 viewBox를 고름 (원본 컴포넌트와 같은 규칙)
+    const lines = display.split('|').map((l) => l.trim()).filter(Boolean);
+    const n = Math.max(...lines.map((l) => l.length));
     const fontSize = n > 12 ? 72 : n > 8 ? 96 : 148;
     const vbW = n > 8 ? 1100 : 860;
-    const vbH = n > 8 ? 200 : 240;
+    const lineH = fontSize * 1.08;
+    const pad = (n > 8 ? 200 : 240) - lineH;
+    const vbH = Math.round(pad + lineH * lines.length);
     const gradientId = `pathGradient-${++uid}`;
 
     const svg = document.createElementNS(SVG_NS, 'svg');
@@ -101,12 +104,18 @@
           <stop offset="100%" stop-color="${toColor}"></stop>
         </linearGradient>
       </defs>
-      <text x="${strokeWidth * 2}" y="50%" text-anchor="start" dominant-baseline="middle"
+      <text x="${strokeWidth * 2}" y="${pad / 2 + lineH / 2}" text-anchor="start" dominant-baseline="middle"
         fill="none" stroke="url(#${gradientId})" stroke-width="${strokeWidth}"
         stroke-linejoin="round" stroke-linecap="round" font-size="${fontSize}"
         font-weight="bold" font-family="Arial, Helvetica, sans-serif" letter-spacing="0.02em"></text>`;
     const textEl = svg.querySelector('text');
-    textEl.textContent = display;
+    lines.forEach((line, i) => {
+      const span = document.createElementNS(SVG_NS, 'tspan');
+      span.setAttribute('x', String(strokeWidth * 2));
+      if (i) span.setAttribute('dy', String(lineH));
+      span.textContent = line;
+      textEl.appendChild(span);
+    });
     host.appendChild(svg);
 
     if (reduceMotion) { svg.style.visibility = 'visible'; return; }
