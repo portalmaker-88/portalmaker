@@ -180,9 +180,11 @@ html { scroll-snap-type: y mandatory; }
 .button-grid li { min-width: 0; min-height: 0; }
 @media (min-aspect-ratio: 1/1) { .button-page { --cols: 5; --rows: 6; } }   /* 가로 화면(PC) */
 @media (min-aspect-ratio: 2/1) { .button-page { --cols: 10; --rows: 3; } }  /* 아주 넓은 화면, 가로로 돌린 휴대폰 */
-/* js/main.js가 화면 크기에 맞춰 가로로 넓은 버튼이 되는 배열을 골라 --cols, --rows, --tile-h를 넣음 */
+/* js/main.js가 화면 크기에 맞춰 가로로 넓은 버튼이 되는 배열을 골라 --cols, --rows, --tile-w, --tile-h를 넣음 */
 .button-page.is-fitted .button-grid {
   flex: none; margin-block: auto;
+  grid-template-columns: repeat(var(--cols), var(--tile-w));
+  justify-content: center;
   grid-template-rows: repeat(var(--rows), var(--tile-h));
 }
 .tile {

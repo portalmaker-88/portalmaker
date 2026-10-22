@@ -28,11 +28,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
   }, { passive: false });
 })();
 
-// 버튼 배열: 한 화면 30개를 가로로 넓은 버튼(가로:세로 약 3:1)이 되게 열 수를 고름
+// 버튼 배열: 한 화면 30개를 가로로 넓은 버튼(가로:세로 약 3:1)이 되게 열 수를 고르고,
+// 버튼 너비는 그 칸 너비의 WIDTH_SCALE(2/3)로 줄여 가운데 정렬
 (() => {
   const pages = [...document.querySelectorAll('.button-page')];
   if (!pages.length) return;
-  const RATIO = 3, MIN_H = 36, MAX_H = 96;
+  const RATIO = 3, MIN_H = 36, MAX_H = 96, WIDTH_SCALE = 2 / 3;
   function fit() {
     const page = pages[0], grid = page.querySelector('.button-grid');
     const n = grid.children.length;
@@ -48,12 +49,13 @@ document.getElementById('year').textContent = new Date().getFullYear();
       const h = Math.min(MAX_H, (H - gap * (rows - 1)) / rows);
       if (w < 72) break;
       const score = Math.abs(Math.log(w / h / RATIO)) + (h < MIN_H ? 10 : 0);
-      if (!best || score < best.score) best = { cols, rows, h, score };
+      if (!best || score < best.score) best = { cols, rows, w, h, score };
     }
     if (!best) return;
     pages.forEach((p) => {
       p.style.setProperty('--cols', best.cols);
       p.style.setProperty('--rows', best.rows);
+      p.style.setProperty('--tile-w', Math.floor(best.w * WIDTH_SCALE) + 'px');
       p.style.setProperty('--tile-h', Math.floor(best.h) + 'px');
       p.classList.add('is-fitted');
     });
