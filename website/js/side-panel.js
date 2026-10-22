@@ -12,8 +12,8 @@
   var CACHE_KEY = 'sheet-recipes';
 
   var TEXT = {
-    ko: { title: '버튼 레시피', intro: '버튼을 순서대로 누르면 결과물이 완성돼요.', all: '전체', filters: '카테고리', input: '입력', open: '사이드바 열기', close: '사이드바 접기' },
-    en: { title: 'Button Recipes', intro: 'Press the buttons in order to build each deliverable.', all: 'All', filters: 'Categories', input: 'Input', open: 'Open sidebar', close: 'Close sidebar' }
+    ko: { title: '버튼 레시피', intro: '번호를 위에서부터 차례로 누르면 프롬프트가 복사돼요. 같은 AI 대화에 이어서 붙여넣으세요.', all: '전체', filters: '카테고리', input: '입력', open: '버튼 레시피 열기', close: '버튼 레시피 닫기', tab: '레시피', copy: '버튼 {n} 프롬프트 복사' },
+    en: { title: 'Button Recipes', intro: 'Tap the numbers from top to bottom to copy each prompt, then paste them into the same AI chat.', all: 'All', filters: 'Categories', input: 'Input', open: 'Open button recipes', close: 'Close button recipes', tab: 'RECIPES', copy: 'Copy button {n} prompt' }
   };
 
   var panel = document.getElementById('side-panel');
@@ -24,7 +24,10 @@
   var filtersEl = document.getElementById('recipe-filters');
   var listEl = document.getElementById('recipe-list');
 
+  var tabLabel = document.getElementById('panel-tab-label');
+
   var rows = window.RECIPES_SNAPSHOT || []; // 시트 한 줄 = 문자열 8칸
+  var done = {}; // 복사한 단계: "레시피 줄 순번:단계 순번" → true (언어를 바꿔도 유지, 새로고침하면 사라짐)
   var category = -1; // 고른 카테고리 순번 (-1 = 전체). 언어가 바뀌어도 같은 카테고리가 유지되게 순번으로 기억
 
   function lang() { return document.documentElement.lang === 'en' ? 'en' : 'ko'; }
@@ -78,12 +81,13 @@
     var cats = categories();
     if (category >= cats.keys.length) category = -1;
     tab.setAttribute('aria-label', isOpen() ? t.close : t.open);
+    tabLabel.textContent = t.tab;
     titleEl.textContent = t.title;
     introEl.textContent = t.intro;
     renderFilters(cats);
 
     listEl.textContent = '';
-    rows.forEach(function (r) {
+    rows.forEach(function (r, ri) {
       if (category >= 0 && r[1] !== cats.keys[category]) return;
       var d = recipe(r);
       if (!d.name && !d.steps) return;
@@ -96,11 +100,29 @@
 
       var parts = d.steps.split('➔').map(function (s) { return s.trim(); }).filter(Boolean);
       var ol = el('ol', 'recipe-steps');
-      parts.forEach(function (s) {
+      parts.forEach(function (s, si) {
         var p = step(s);
         var item = el('li', p.num ? 'recipe-step' : 'recipe-step is-input');
-        item.appendChild(el('span', 'step-badge', p.num || t.input));
-        item.appendChild(el('span', 'step-label', p.label));
+        if (!p.num) {
+          item.appendChild(el('span', 'step-badge', t.input));
+          item.appendChild(el('span', 'step-label', p.label));
+        } else {
+          var key = ri + ':' + si;
+          if (done[key]) item.classList.add('done');
+          var btn = el('button', 'step-btn');
+          btn.type = 'button';
+          btn.setAttribute('aria-label', t.copy.replace('{n}', p.num) + ' (' + p.label + ')');
+          btn.appendChild(el('span', 'step-badge', p.num));
+          btn.appendChild(el('span', 'step-label', p.label));
+          btn.insertAdjacentHTML('beforeend', '<svg class="step-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+          btn.addEventListener('click', function () {
+            if (!window.ButtonApp) return;
+            window.ButtonApp.copyButton(parseInt(p.num, 10)).then(function (ok) {
+              if (ok) { done[key] = true; item.classList.add('done'); }
+            });
+          });
+          item.appendChild(btn);
+        }
         ol.appendChild(item);
       });
       li.appendChild(ol);
@@ -118,7 +140,15 @@
     tab.setAttribute('aria-label', TEXT[lang()][open ? 'close' : 'open']);
   }
 
-  tab.addEventListener('click', function () { setOpen(!isOpen()); });
+  tab.addEventListener('click', function () { setOpen(!isOpen()); tab.classList.remove('peek'); });
+
+  // 처음 방문한 사람에게만 탭을 살짝 흔들어 보여줌
+  try {
+    if (!localStorage.getItem('tab-seen')) {
+      tab.classList.add('peek');
+      localStorage.setItem('tab-seen', '1');
+    }
+  } catch (e) {}
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && isOpen()) { setOpen(false); tab.focus(); }
   });

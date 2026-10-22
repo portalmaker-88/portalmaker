@@ -1,43 +1,31 @@
-/* ===== 디자인 토큰: 색·폰트·간격은 여기서만 바꾸면 됩니다 ===== */
+/* ===== 디자인 토큰: 색·폰트·간격은 여기서만 바꾸면 됩니다 =====
+   사이트는 기기의 라이트/다크 설정과 상관없이 항상 어두운 화면 */
 :root {
-  --color-bg: #ffffff;
-  --color-bg-alt: #f5f5f7;
-  --color-text: #1d1d1f;
-  --color-muted: #6e6e73;
-  --color-primary: #3b5bdb;
-  --color-primary-contrast: #ffffff;
-  --color-border: #e0e0e5;
+  --ink-0: #0a0a0b;      /* 페이지 바탕 */
+  --ink-1: #141413;      /* 카드·사이드바·헤더 바탕 */
+  --ink-2: #1f1e1c;      /* 마우스를 올렸을 때 */
+  --line: #3a3833;       /* 테두리 */
+  --line-soft: #2a2927;  /* 옅은 구분선 */
+  --cream: #ece6da;      /* 본문 글씨 */
+  --cream-2: #cfc8bb;    /* 보조 글씨 */
+  --muted: #8f897d;      /* 흐린 글씨 */
+  --accent: #c8463c;     /* 강조(레드) */
+  --accent-bg: #2a1d1b;  /* 강조 바탕 */
+  --accent-soft: #ffd9cf;
+
+  --color-bg: var(--ink-0);
+  --color-text: var(--cream);
+  --color-muted: var(--muted);
+  --color-border: var(--line);
 
   --font-sans: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
   --font-heading: var(--font-sans);
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --radius: 12px;
   --space-section: clamp(4rem, 8vw, 7rem);
   --container: 1120px;
   --header-h: 64px;
-}
-
-/* 다크 모드: 위와 같은 토큰만 다시 정의합니다 */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-bg: #121214;
-    --color-bg-alt: #1c1c20;
-    --color-text: #f2f2f5;
-    --color-muted: #a1a1aa;
-    --color-primary: #7b93ff;
-    --color-primary-contrast: #0b0b0d;
-    --color-border: #2e2e35;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --color-bg: #121214;
-  --color-bg-alt: #1c1c20;
-  --color-text: #f2f2f5;
-  --color-muted: #a1a1aa;
-  --color-primary: #7b93ff;
-  --color-primary-contrast: #0b0b0d;
-  --color-border: #2e2e35;
   color-scheme: dark;
 }
 
@@ -52,7 +40,7 @@ body {
   background: transparent; /* 바탕은 html 색 + 흐름 캔버스 */
   word-break: keep-all;
 }
-html { background: #0a0a0b; }
+html { background: var(--ink-0); }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
 h1, h2, h3 { font-family: var(--font-heading); line-height: 1.25; margin: 0 0 1rem; }
@@ -73,44 +61,40 @@ p { margin: 0 0 1rem; }
 /* ===== 헤더 / 내비게이션 ===== */
 .site-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
-  /* 뒤에서 캔버스가 계속 움직여서 흐림(blur) 효과는 뺌: 매 프레임 다시 계산돼 PC에서 버벅임 */
-  background: color-mix(in srgb, var(--color-bg) 96%, transparent);
+  /* 뒤에서 캔버스가 계속 움직여서 흐림(blur) 효과는 뺌: 매 프레임 다시 계산돼 PC에서 버벅임.
+     반투명이면 아래 버튼 글씨가 비쳐 보여서 불투명하게 */
+  background: var(--ink-1);
   border-bottom: 1px solid var(--color-border);
 }
 .header-inner { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; }
 .logo { display: block; text-decoration: none; border-radius: 4px; }
-.logo:focus-visible { outline: 2px solid #c8463c; outline-offset: 4px; }
-/* 로고: 히어로 원뿔을 줄인 실루엣. 색은 헤더 바탕(라이트/다크)을 따라감 */
+.logo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+/* 로고: 히어로 원뿔을 줄인 실루엣. 헤더는 항상 어두운 바탕 */
 .logo-mark {
   display: block; height: 32px; width: auto; overflow: visible;
   --logo-ink: var(--color-text);
   --logo-hole: color-mix(in srgb, var(--color-text) 40%, var(--color-bg));
-  --logo-comet: #c8463c;
-  --logo-glow: transparent;
+  --logo-comet: #ffeec8;
+  --logo-glow: #ffd796;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .logo-mark { --logo-comet: #ffeec8; --logo-glow: #ffd796; }
-}
-:root[data-theme="dark"] .logo-mark { --logo-comet: #ffeec8; --logo-glow: #ffd796; }
 
 /* ===== 버튼 ===== */
-.btn { display: inline-block; padding: .8rem 1.5rem; border-radius: var(--radius); text-decoration: none; font-weight: 600; border: 1px solid transparent; cursor: pointer; font: inherit; }
-.btn-primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+.btn { display: inline-block; padding: .8rem 1.5rem; border-radius: var(--radius); text-decoration: none; font-weight: 600; border: 1px solid transparent; cursor: pointer; font: inherit; font-weight: 600; }
+.btn-primary { background: var(--accent); color: #fff; }
 .btn-ghost { border-color: var(--color-border); }
 
 /* ===== 섹션 ===== */
-.eyebrow { color: var(--color-primary); font-weight: 600; letter-spacing: .05em; }
+.eyebrow { color: var(--muted); font-weight: 600; letter-spacing: .05em; }
 .lead { font-size: 1.15rem; color: var(--color-muted); max-width: 40ch; margin-inline: auto; }
 .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
 
 /* ===== 메인 hero: 원뿔 모션그래픽 (라이트/다크 모드와 상관없이 항상 어두운 배경) ===== */
 .hero {
-  --hero-bg: #0a0a0b;
-  --hero-text: #ece6da;
-  --hero-muted: #8f897d;
-  --hero-line: #3a3833;
+  --hero-bg: var(--ink-0);
+  --hero-text: var(--cream);
+  --hero-muted: var(--muted);
+  --hero-line: var(--line);
   --font-hero: "Noto Sans KR", var(--font-sans);
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   position: relative;
   overflow: hidden;
   min-height: calc(100svh - var(--header-h));
@@ -125,11 +109,31 @@ p { margin: 0 0 1rem; }
   display: block;
   touch-action: pan-y;
 }
-.hero-copy { position: relative; pointer-events: none; }
+.hero-copy { position: relative; z-index: 0; pointer-events: none; }
 .hero-copy a, .hero-copy button { pointer-events: auto; }
 .hero .eyebrow { font-family: var(--font-mono); font-size: .8rem; font-weight: 400; letter-spacing: .08em; color: var(--hero-muted); margin-bottom: .6rem; }
 .hero h1 { font-family: var(--font-hero); font-weight: 800; font-size: clamp(2.1rem, 9vw, 4.75rem); line-height: 1.05; max-width: 14ch; text-wrap: balance; }
-.hero .lead { font-family: var(--font-mono); font-size: .85rem; color: var(--hero-muted); max-width: 34ch; margin-inline: 0; }
+.hero .lead { font-family: var(--font-mono), "Noto Sans KR", sans-serif; font-size: clamp(.95rem, 2.4vw, 1.05rem); line-height: 1.65; color: var(--cream-2); max-width: 30ch; margin-inline: 0; }
+/* 글씨 뒤를 살짝 어둡게 깔아서 원뿔 점들 위에서도 잘 읽히게 */
+.hero-copy::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  left: -10%; top: -15%; width: min(120%, 760px); height: 130%;
+  background: radial-gradient(closest-side, rgba(10, 10, 11, .78), rgba(10, 10, 11, 0));
+}
+/* 히어로 맨 아래: 버튼 화면으로 내려가는 안내 */
+.scroll-cue {
+  position: absolute; left: 50%; bottom: max(18px, env(safe-area-inset-bottom, 0px)); z-index: 1;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 6px 12px; border-radius: 999px;
+  color: var(--cream-2); text-decoration: none;
+  font-family: var(--font-mono), "Noto Sans KR", sans-serif; font-size: .78rem; letter-spacing: .06em;
+  -webkit-tap-highlight-color: transparent;
+}
+.scroll-cue svg { width: 18px; height: 18px; animation: cue-bob 1.8s ease-in-out infinite; }
+.scroll-cue:hover { color: #fff; }
+.scroll-cue:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@keyframes cue-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 .hero .hero-actions { justify-content: flex-start; margin-top: 1.5rem; }
 .hero .btn-primary {
   background: rgba(236, 230, 218, .08);
@@ -140,7 +144,7 @@ p { margin: 0 0 1rem; }
   transition: background-color .2s, border-color .2s;
 }
 .hero .btn-primary:hover { background: rgba(236, 230, 218, .16); border-color: rgba(236, 230, 218, .38); }
-.hero .btn-primary:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
+.hero .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .hero-brand { width: min(100%, 720px); margin: .25rem 0 1rem; }
 .hero-brand svg { display: block; width: 100%; height: auto; overflow: visible; }
 
@@ -166,7 +170,7 @@ html { scroll-snap-type: y mandatory; }
 /* ===== 버튼 목록: 한 화면에 30개, 모든 버튼이 같은 크기 ===== */
 .buttons {
   background: transparent;
-  color: #ece6da;
+  color: var(--cream);
   color-scheme: dark;
 }
 .button-page {
@@ -178,6 +182,14 @@ html { scroll-snap-type: y mandatory; }
   padding-top: clamp(12px, 3vh, 40px);
   padding-bottom: clamp(28px, 4vh, 44px); /* 마지막 화면은 이 자리에 푸터가 들어감 */
 }
+/* 화면마다 맨 위: 몇 번부터 몇 번 버튼인지 */
+.page-label {
+  flex: none; display: flex; justify-content: center; align-items: baseline; gap: .7em;
+  margin: 0 0 clamp(8px, 2vh, 20px);
+  font-family: var(--font-mono); font-size: .75rem; letter-spacing: .12em; line-height: 1.2;
+  color: var(--muted);
+}
+.page-label-range { color: var(--cream-2); }
 .button-grid {
   flex: 1; min-height: 0;
   list-style: none; margin: 0; padding: 0;
@@ -199,17 +211,47 @@ html { scroll-snap-type: y mandatory; }
 .tile {
   display: flex; align-items: center; justify-content: center;
   width: 100%; height: 100%; padding: 0 .5rem;
-  border: 1px solid #3a3833; border-radius: var(--radius);
+  border: 1px solid var(--line); border-radius: var(--radius);
   background: rgba(20, 20, 19, .8); /* 바탕 흐름이 아주 흐리게 비침 */
   color: inherit; text-decoration: none; text-align: center;
-  font-weight: 700; font-size: clamp(.8rem, 1.8vh, 1.05rem); line-height: 1.25;
+  font-weight: 700; font-size: clamp(.75rem, min(1.8vh, 3.7vw), 1.05rem); line-height: 1.25;
   overflow: hidden; overflow-wrap: anywhere;
   -webkit-tap-highlight-color: transparent;
   transition: background-color .15s, border-color .15s, transform .1s;
 }
-.tile:hover { background: #1f1e1c; border-color: #8f897d; }
+.tile:hover { background: var(--ink-2); border-color: var(--muted); }
+/* 버튼 이름: 길면 두 줄까지 보이고 나머지는 … */
+.tile-label { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+/* 이번 방문에서 이미 복사한 버튼: 오른쪽 위에 작은 점 */
+.tile { position: relative; }
+.tile.used::after {
+  content: ""; position: absolute; top: 7px; right: 7px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+}
 .tile:active { transform: scale(.98); }
-.tile:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
+.tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ===== 오른쪽 위치 표시 (버튼 화면에서만 보임) ===== */
+.page-dots {
+  position: fixed; right: max(10px, env(safe-area-inset-right, 0px)); top: 50%; z-index: 40;
+  transform: translate(8px, -50%);
+  display: flex; flex-direction: column; gap: 6px;
+  opacity: 0; visibility: hidden;
+  transition: opacity .25s, transform .25s, visibility 0s .25s;
+}
+.page-dots.show { opacity: 1; visibility: visible; transform: translate(0, -50%); transition: opacity .25s, transform .25s; }
+.page-dots a {
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--line); background: rgba(20, 20, 19, .85);
+  color: var(--muted); text-decoration: none;
+  font-family: var(--font-mono); font-size: .62rem; letter-spacing: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .15s, border-color .15s, background-color .15s;
+}
+.page-dots a:hover { color: var(--cream); border-color: var(--muted); }
+.page-dots a[aria-current="true"] { color: #fff; border-color: var(--accent); background: var(--accent-bg); }
+.page-dots a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ===== 푸터 (마지막 버튼 화면 맨 아래) ===== */
 .site-footer {
@@ -217,7 +259,7 @@ html { scroll-snap-type: y mandatory; }
   padding: 0 max(16px, env(safe-area-inset-left, 0px));
   height: clamp(28px, 4vh, 44px);
   display: flex; align-items: center; justify-content: center;
-  color: #8f897d; font-size: .75rem;
+  color: var(--muted); font-size: .75rem;
 }
 .site-footer p { margin: 0; }
 
@@ -236,17 +278,17 @@ html { scroll-snap-type: y mandatory; }
 .lang-btn svg { display: block; width: 33px; height: 22px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .25); }
 .lang-btn:hover { opacity: .85; }
 .lang-btn[aria-pressed="true"] { opacity: 1; border-color: var(--color-border); }
-.lang-btn:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
+.lang-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ===== 프롬프트 복사 알림 ===== */
-.tile.copied { border-color: #c8463c; background: #2a1d1b; }
+.tile.copied { border-color: var(--accent); background: var(--accent-bg); }
 .toast {
   position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom, 0px));
   z-index: 100;
   max-width: calc(100% - 32px);
   padding: .7rem 1.1rem;
-  border: 1px solid #3a3833; border-radius: 999px;
-  background: #141413; color: #ece6da;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--ink-1); color: var(--cream);
   font-size: .95rem; font-weight: 600; text-align: center;
   box-shadow: 0 6px 24px rgba(0, 0, 0, .4);
   opacity: 0; transform: translate(-50%, 12px);
@@ -260,8 +302,8 @@ html { scroll-snap-type: y mandatory; }
 .side-panel {
   position: fixed; top: 0; bottom: 0; left: 0; z-index: 70;
   width: var(--panel-w);
-  background: #141413; color: #ece6da;
-  border-right: 1px solid #3a3833;
+  background: var(--ink-1); color: var(--cream);
+  border-right: 1px solid var(--line);
   box-shadow: 8px 0 32px rgba(0, 0, 0, .45);
   color-scheme: dark;
   transform: translateX(calc(-100% - 40px));
@@ -273,13 +315,13 @@ html { scroll-snap-type: y mandatory; }
   height: 100%; overflow-y: auto; overscroll-behavior: contain;
   padding: max(24px, env(safe-area-inset-top, 0px)) 24px max(24px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
   outline: none;
-  scrollbar-width: thin; scrollbar-color: #3a3833 #141413;  /* 스크롤바도 사이드바 색에 맞춤 → 오른쪽 탭과 이어져 보임 */
+  scrollbar-width: thin; scrollbar-color: var(--line) var(--ink-1);  /* 스크롤바도 사이드바 색에 맞춤 → 오른쪽 탭과 이어져 보임 */
 }
 .side-panel-scroll::-webkit-scrollbar { width: 8px; }
-.side-panel-scroll::-webkit-scrollbar-track { background: #141413; }
-.side-panel-scroll::-webkit-scrollbar-thumb { background: #3a3833; border-radius: 4px; }
+.side-panel-scroll::-webkit-scrollbar-track { background: var(--ink-1); }
+.side-panel-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
 .side-panel-title { font-family: "Noto Sans KR", var(--font-sans); font-weight: 800; font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: .4rem; }
-.side-panel-intro { color: #8f897d; font-size: .9rem; margin-bottom: 1.1rem; }
+.side-panel-intro { color: var(--muted); font-size: .9rem; margin-bottom: 1.1rem; }
 
 /* 카테고리 칩: 한 줄로 옆으로 밀어서 보고, 스크롤해도 맨 위에 붙어 있음 */
 .recipe-filters {
@@ -288,84 +330,120 @@ html { scroll-snap-type: y mandatory; }
   overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
   margin: 0 -24px 0 calc(-1 * max(20px, env(safe-area-inset-left, 0px)));
   padding: 10px 24px 12px max(20px, env(safe-area-inset-left, 0px));
-  background: #141413; border-bottom: 1px solid #3a3833;
+  background: var(--ink-1); border-bottom: 1px solid var(--line);
 }
 .recipe-filters::-webkit-scrollbar { display: none; }
+/* 칩 줄 오른쪽 끝을 흐리게: 옆으로 더 있다는 표시 */
+.recipe-filters::after {
+  content: ""; flex: none; position: sticky; right: -24px;
+  width: 40px; margin-left: -34px; margin-right: -24px;
+  background: linear-gradient(to right, rgba(20, 20, 19, 0), var(--ink-1) 70%);
+  pointer-events: none;
+}
 .recipe-chip {
   flex: none; white-space: nowrap;
-  padding: .3rem .7rem; border: 1px solid #3a3833; border-radius: 999px;
-  background: none; color: #cfc8bb; font: inherit; font-size: .8rem; line-height: 1.3; cursor: pointer;
+  padding: .3rem .7rem; border: 1px solid var(--line); border-radius: 999px;
+  background: none; color: var(--cream-2); font: inherit; font-size: .8rem; line-height: 1.3; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.recipe-chip:hover { border-color: #8f897d; }
-.recipe-chip[aria-pressed="true"] { background: #c8463c; border-color: #c8463c; color: #fff; }
-.recipe-chip:focus-visible { outline: 2px solid #c8463c; outline-offset: 2px; }
+.recipe-chip:hover { border-color: var(--muted); }
+.recipe-chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.recipe-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* 레시피 카드 */
 .recipe-list { list-style: none; margin: 0; padding: 0; }
-.recipe { padding: 1.1rem 0; border-bottom: 1px solid #2a2927; }
+.recipe { padding: 1.1rem 0; border-bottom: 1px solid var(--line-soft); }
 .recipe-meta { display: flex; align-items: center; gap: .5rem; margin-bottom: .3rem; font-size: .72rem; }
-.recipe-no { color: #c8463c; font-weight: 700; }
-.recipe-cat { color: #8f897d; }
+.recipe-no { color: var(--accent); font-weight: 700; }
+.recipe-cat { color: var(--muted); }
 .recipe-name { font-size: 1rem; line-height: 1.4; margin: 0 0 .7rem; }
 
 /* 단계: 세로로 이어진 줄 위에 번호 배지 */
 .recipe-steps { list-style: none; margin: 0; padding: 0; }
-.recipe-step { position: relative; display: flex; align-items: center; gap: .6rem; min-height: 30px; padding: 2px 0; font-size: .88rem; color: #ece6da; }
+.recipe-step { position: relative; display: flex; align-items: center; gap: .6rem; min-height: 30px; padding: 1px 0; font-size: .88rem; color: var(--cream); }
 .recipe-step + .recipe-step::before {   /* 앞 단계 배지와 잇는 선 */
-  content: ""; position: absolute; left: 17px; top: -8px; height: 12px; border-left: 1px solid #3a3833;
+  content: ""; position: absolute; left: 17px; top: -8px; height: 12px; border-left: 1px solid var(--line);
 }
 .step-badge {
   flex: none; display: inline-flex; align-items: center; justify-content: center;
   min-width: 35px; height: 24px; padding: 0 .4rem; border-radius: 6px;
-  background: #2a1d1b; border: 1px solid #c8463c; color: #ffd9cf;
-  font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .78rem; font-weight: 600;
+  background: var(--accent-bg); border: 1px solid var(--accent); color: var(--accent-soft);
+  font-family: var(--font-mono); font-size: .78rem; font-weight: 600;
+  transition: background-color .15s, color .15s, transform .1s;
 }
-.recipe-step.is-input { color: #cfc8bb; }
-.recipe-step.is-input .step-badge { background: none; border: 1px dashed #8f897d; color: #8f897d; font-family: inherit; font-size: .7rem; }
+.recipe-step.is-input { color: var(--cream-2); }
+/* 번호가 있는 단계는 누르면 그 버튼의 프롬프트를 복사 */
+.step-btn {
+  display: flex; align-items: center; gap: .6rem; flex: 1; min-width: 0;
+  margin: 0 -6px; padding: 2px 6px; min-height: 30px;
+  border: 0; border-radius: 8px; background: none; color: inherit;
+  font: inherit; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .15s;
+}
+.step-btn:hover { background: var(--ink-2); }
+.step-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+.step-btn:active .step-badge { transform: scale(.95); }
+.step-label { flex: 1; min-width: 0; }
+.step-check { flex: none; width: 16px; height: 16px; color: var(--accent); opacity: 0; transition: opacity .2s; }
+.recipe-step.done .step-check { opacity: 1; }
+.recipe-step.done .step-badge { background: var(--accent); color: #fff; }
+.recipe-step.done .step-label { color: var(--muted); }
+.recipe-step.is-input .step-badge { background: none; border: 1px dashed var(--muted); color: var(--muted); font-family: inherit; font-size: .7rem; }
 
 /* 여닫는 탭: 사다리꼴. 긴 변이 붙는 쪽(닫히면 화면 왼쪽 끝, 열리면 사이드바 오른쪽 끝), 짧은 변이 바깥쪽.
    사이드바와 같은 바탕·테두리 색이라 사이드바(스크롤바)에서 그대로 튀어나온 것처럼 보임.
    화면에 고정돼 있어서 스크롤해도 늘 같은 자리에 있음 */
 .panel-tab {
-  --tab-w: 26px; --tab-h: 96px;
+  --tab-w: 30px; --tab-h: 124px;
   --tab-shape: polygon(0 0, 100% 20%, 100% 80%, 0 100%);
   position: fixed; top: 50%; left: 0; z-index: 71;
   width: var(--tab-w); height: var(--tab-h); padding: 0 2px 0 0;
   transform: translate(0, -50%);
   border: 0; cursor: pointer;
-  background: #3a3833;      /* 바깥 사다리꼴 = 테두리 색 */
+  background: var(--line);      /* 바깥 사다리꼴 = 테두리 색 */
   clip-path: var(--tab-shape);
-  display: flex; align-items: center; justify-content: center;
-  color: #ece6da;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  color: var(--cream);
   -webkit-tap-highlight-color: transparent;
   transition: transform .35s cubic-bezier(.2, .8, .2, 1), background-color .15s;
 }
 .panel-tab::before {        /* 안쪽 사다리꼴 = 탭 바탕 (붙는 쪽은 테두리 없음) */
   content: ""; position: absolute; top: 1px; bottom: 1px; left: 0; right: 1px;
-  background: #141413;
+  background: var(--ink-1);
   clip-path: var(--tab-shape);
   transition: background-color .15s;
 }
-.panel-tab svg { position: relative; width: 16px; height: 16px; transition: transform .35s; }
+.panel-tab svg { position: relative; width: 14px; height: 14px; flex: none; transition: transform .35s; }
+.panel-tab-label {
+  position: relative; writing-mode: vertical-rl;
+  font-size: .68rem; font-weight: 700; letter-spacing: .12em; line-height: 1;
+  white-space: nowrap;
+}
+html[lang="en"] .panel-tab-label { font-size: .6rem; letter-spacing: .08em; }
+.panel-open .panel-tab-label { display: none; }
+/* 처음 방문하면 탭이 두 번 살짝 튀어나와서 눈에 띄게 */
+.panel-tab.peek { animation: tab-peek 1.4s ease-in-out .8s 2; }
+@keyframes tab-peek { 0%, 100% { transform: translate(0, -50%); } 40% { transform: translate(8px, -50%); } }
 .panel-open .panel-tab { transform: translate(calc(var(--panel-w) - 1px), -50%); }  /* 사이드바 테두리와 겹쳐서 이어 붙임 */
 .panel-open .panel-tab svg { transform: scaleX(-1); }
-.panel-tab:hover, .panel-tab:focus-visible { outline: none; background: #c8463c; }
-.panel-tab:hover::before { background: #2a1d1b; }
+.panel-tab:hover, .panel-tab:focus-visible { outline: none; background: var(--accent); }
+.panel-tab:hover::before { background: var(--accent-bg); }
 
 @media (prefers-reduced-motion: reduce) {
   .side-panel, .panel-open .side-panel, .panel-tab, .panel-tab svg { transition: none; }
+  .panel-tab.peek, .scroll-cue svg { animation: none; }
 }
 
 /* ===== How to Use 페이지 (how-to-use.html) ===== */
 .page-howto { scroll-snap-type: none; }
 /* 한국어/영어 내용 중 지금 언어만 보여줌 (i18n.js가 <html lang>을 바꿈) */
 html[lang="en"] [data-lang-block="ko"], html:not([lang="en"]) [data-lang-block="en"] { display: none; }
-.howto { color: #ece6da; color-scheme: dark; }
+.howto { color: var(--cream); color-scheme: dark; }
 .howto-inner { max-width: 760px; padding-top: clamp(2rem, 7vh, 4.5rem); padding-bottom: 3rem; }
-.howto .eyebrow { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .8rem; font-weight: 400; letter-spacing: .08em; color: #8f897d; margin-bottom: .6rem; }
+.howto .eyebrow { font-family: var(--font-mono); font-size: .8rem; font-weight: 400; letter-spacing: .08em; color: var(--muted); margin-bottom: .6rem; }
 .howto h1 { font-family: "Noto Sans KR", var(--font-sans); font-weight: 800; font-size: clamp(2rem, 7vw, 3.25rem); line-height: 1.1; }
-.howto-lead { color: #cfc8bb; font-size: 1.05rem; max-width: 46ch; margin-bottom: 2.5rem; }
+.howto-lead { color: var(--cream-2); font-size: 1.05rem; max-width: 46ch; margin-bottom: 2.5rem; }
 .howto strong { color: #fff; }
 
 /* 단계: 왼쪽에 큰 번호, 카드처럼 살짝 비치는 바탕 */
@@ -374,32 +452,32 @@ html[lang="en"] [data-lang-block="ko"], html:not([lang="en"]) [data-lang-block="
   counter-increment: howto;
   position: relative;
   padding: 1.25rem 1.25rem 1.1rem 4rem;
-  border: 1px solid #3a3833; border-radius: var(--radius);
+  border: 1px solid var(--line); border-radius: var(--radius);
   background: rgba(20, 20, 19, .82);
 }
 .howto-step::before {
   content: counter(howto, decimal-leading-zero);
   position: absolute; left: 1.15rem; top: 1.2rem;
-  font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 1.05rem; font-weight: 600; color: #c8463c;
+  font-family: var(--font-mono); font-size: 1.05rem; font-weight: 600; color: var(--accent);
 }
 .howto-step h2 { font-size: 1.15rem; margin: 0 0 .5rem; }
-.howto-step p { color: #cfc8bb; font-size: .95rem; margin-bottom: .75rem; }
+.howto-step p { color: var(--cream-2); font-size: .95rem; margin-bottom: .75rem; }
 .howto-step > :last-child { margin-bottom: 0; }
-.howto-note { color: #8f897d !important; font-size: .85rem !important; }
-.howto-list { margin: .9rem 0 0; padding-left: 1.1rem; color: #cfc8bb; font-size: .92rem; }
+.howto-note { color: var(--muted) !important; font-size: .85rem !important; }
+.howto-list { margin: .9rem 0 0; padding-left: 1.1rem; color: var(--cream-2); font-size: .92rem; }
 .howto-list li + li { margin-top: .35rem; }
 
 /* 예시 그림: 실제 버튼·알림·레시피와 같은 모양 */
 .howto-demo { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: .25rem 0 .9rem; }
 .howto-demo .tile { width: auto; height: 44px; padding: 0 1.4rem; font-size: .95rem; }
 .howto-toast {
-  padding: .5rem 1rem; border: 1px solid #3a3833; border-radius: 999px;
-  background: #141413; font-size: .85rem; font-weight: 600;
+  padding: .5rem 1rem; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--ink-1); font-size: .85rem; font-weight: 600;
   box-shadow: 0 6px 24px rgba(0, 0, 0, .4);
 }
-.howto-recipe { margin: .25rem 0 0; padding: .8rem 1rem; border: 1px solid #2a2927; border-radius: 10px; background: #141413; }
+.howto-recipe { margin: .25rem 0 0; padding: .8rem 1rem; border: 1px solid var(--line-soft); border-radius: 10px; background: var(--ink-1); }
 
-.howto-tip { color: #8f897d; font-size: .9rem; margin: 1.75rem 0 0; }
+.howto-tip { color: var(--muted); font-size: .9rem; margin: 1.75rem 0 0; }
 .howto-actions { margin-top: 1.25rem; }
 .howto-footer { position: static; height: auto; padding-block: 1.5rem; }
 

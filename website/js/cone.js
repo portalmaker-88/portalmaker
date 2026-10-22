@@ -112,7 +112,7 @@
   function anchor() {
     const portrait = H > W;
     const tx = portrait ? W * 0.4 : W * 0.86;
-    const ty = portrait ? H * 0.63 : H * 0.56;
+    const ty = portrait ? H * 0.7 : H * 0.56; // 휴대폰은 소개 문구·버튼과 덜 겹치게 조금 아래로
     coneToWorld(portrait ? 0 : HEAD_A, 0, 0, out);
     const s = focal / (camDist - out.z);
     cx = tx - out.x * s;
