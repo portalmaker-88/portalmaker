@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko" class="page-howto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Use · BUTTON</title>
+  <meta name="application-name" content="BUTTON">
+  <meta name="apple-mobile-web-app-title" content="BUTTON">
+  <meta property="og:site_name" content="BUTTON">
+  <meta property="og:title" content="BUTTON">
+  <meta name="description" content="BUTTON 사용 방법: 버튼을 눌러 프롬프트를 복사하고, 버튼 레시피를 따라 결과물을 만드는 법.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Noto+Sans+KR:wght@800&display=swap">
+  <link rel="icon" href="assets/favicon-32.png?v=dev" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/favicon.svg?v=dev" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=dev">
+  <link rel="stylesheet" href="css/style.css?v=dev">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">본문으로 건너뛰기</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="./" aria-label="홈으로" data-i18n-label="homeLabel"><svg class="logo-mark" viewBox="9 1 84 60" aria-hidden="true"><defs><radialGradient id="logo-glow"><stop offset="0" style="stop-color:var(--logo-glow)" stop-opacity=".55"/><stop offset="1" style="stop-color:var(--logo-glow)" stop-opacity="0"/></radialGradient><mask id="logo-cut"><path d="M20 11L82 32L20 53A6.3 21 0 0 1 20 11Z" fill="#fff"/><g stroke="#000" stroke-width="3.4"><path d="M27.74 58L45.74 6"/><path d="M42 58L60 6"/><path d="M55.02 58L73.02 6"/></g></mask></defs><g transform="rotate(8 50 32)"><path d="M20 11L82 32L20 53A6.3 21 0 0 1 20 11Z" style="fill:var(--logo-ink)" mask="url(#logo-cut)"/><ellipse cx="20" cy="32" rx="4.91" ry="16.8" style="fill:var(--logo-hole)"/><circle cx="86" cy="32" r="10.08" fill="url(#logo-glow)"/><circle cx="86" cy="32" r="4.2" style="fill:var(--logo-comet)"/></g></svg></a>
+      <div class="lang-switch" role="group" aria-label="언어 선택" data-i18n-label="langLabel">
+        <button type="button" class="lang-btn" data-lang="ko" aria-pressed="true" aria-label="한국어" title="한국어"><svg viewBox="-36 -24 72 48" aria-hidden="true"><path d="M-36-24h72v48h-72z" fill="#fff"/><g transform="rotate(-56.3099325)"><g id="kr-b2"><path id="kr-b" d="M-6-26H6v2H-6zm0 3H6v2H-6zm0 3H6v2H-6z"/><use href="#kr-b" y="44"/></g><path stroke="#fff" d="M0,17v10"/><path fill="#cd2e3a" d="M0-12A12 12 0 0 1 0 12z"/><path fill="#0047a0" d="M0-12A12 12 0 0 0 0 12 6 6 0 0 0 0 0z"/><circle cy="-6" fill="#cd2e3a" r="6"/></g><g transform="rotate(-123.6900675)"><use href="#kr-b2"/><path stroke="#fff" d="M0-23.5v3M0,17v3.5M0,23.5v3"/></g></svg></button>
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false" aria-label="English" title="English"><svg viewBox="0 0 57 19.5" preserveAspectRatio="none" aria-hidden="true"><rect width="57" height="19.5" fill="#fff"/><rect y="0" width="57" height="1.5" fill="#b22234"/><rect y="3" width="57" height="1.5" fill="#b22234"/><rect y="6" width="57" height="1.5" fill="#b22234"/><rect y="9" width="57" height="1.5" fill="#b22234"/><rect y="12" width="57" height="1.5" fill="#b22234"/><rect y="15" width="57" height="1.5" fill="#b22234"/><rect y="18" width="57" height="1.5" fill="#b22234"/><rect width="22.8" height="10.5" fill="#3c3b6e"/><circle cx="2.2" cy="2.0" r=".7" fill="#fff"/><circle cx="6.6" cy="2.0" r=".7" fill="#fff"/><circle cx="11.0" cy="2.0" r=".7" fill="#fff"/><circle cx="15.4" cy="2.0" r=".7" fill="#fff"/><circle cx="19.8" cy="2.0" r=".7" fill="#fff"/><circle cx="2.2" cy="5.6" r=".7" fill="#fff"/><circle cx="6.6" cy="5.6" r=".7" fill="#fff"/><circle cx="11.0" cy="5.6" r=".7" fill="#fff"/><circle cx="15.4" cy="5.6" r=".7" fill="#fff"/><circle cx="19.8" cy="5.6" r=".7" fill="#fff"/><circle cx="2.2" cy="9.2" r=".7" fill="#fff"/><circle cx="6.6" cy="9.2" r=".7" fill="#fff"/><circle cx="11.0" cy="9.2" r=".7" fill="#fff"/><circle cx="15.4" cy="9.2" r=".7" fill="#fff"/><circle cx="19.8" cy="9.2" r=".7" fill="#fff"/><circle cx="2.2" cy="12.8" r=".7" fill="#fff"/><circle cx="6.6" cy="12.8" r=".7" fill="#fff"/><circle cx="11.0" cy="12.8" r=".7" fill="#fff"/><circle cx="15.4" cy="12.8" r=".7" fill="#fff"/><circle cx="19.8" cy="12.8" r=".7" fill="#fff"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="howto">
+    <!-- 한국어 / English 내용을 둘 다 넣어 두고, 국기 버튼으로 바뀐 <html lang>에 따라 하나만 보여줌 (css/style.css) -->
+    <article class="container howto-inner" data-lang-block="ko" lang="ko">
+      <p class="eyebrow">How to Use</p>
+      <h1>BUTTON 사용 방법</h1>
+      <p class="howto-lead">버튼을 누르면 AI에게 보낼 프롬프트가 복사돼요. 사용하는 AI 채팅창에 붙여넣기만 하면 됩니다. 여러 버튼을 순서대로 쓰면 보고서, 발표자료 같은 결과물을 만들 수 있어요.</p>
+
+      <ol class="howto-steps">
+        <li class="howto-step">
+          <h2>언어 고르기</h2>
+          <p>오른쪽 위의 <strong>태극기</strong>를 누르면 한국어, <strong>성조기</strong>를 누르면 영어로 바뀌어요. 버튼 이름, 복사되는 프롬프트, 버튼 레시피가 모두 고른 언어로 바뀌고, 다음에 방문해도 그대로 기억해요.</p>
+        </li>
+        <li class="howto-step">
+          <h2>버튼 찾기</h2>
+          <p>첫 화면에서 아래로 내리면 버튼이 나와요. 버튼은 모두 90개이고, 한 화면에 30개씩 세 화면으로 나뉘어 있어요. PC에서는 마우스 휠을 한 번 굴릴 때마다 한 화면씩 넘어가요.</p>
+        </li>
+        <li class="howto-step">
+          <h2>버튼을 눌러 프롬프트 복사하기</h2>
+          <p>버튼을 누르면 그 버튼의 프롬프트가 클립보드에 복사되고, 화면 아래에 알림이 떠요.</p>
+          <div class="howto-demo" aria-hidden="true">
+            <span class="tile copied">아이디어 도출</span>
+            <span class="howto-toast">프롬프트를 복사했어요</span>
+          </div>
+          <p class="howto-note">"아직 입력된 프롬프트가 없어요"라고 나오면 그 버튼은 아직 준비 중이에요.</p>
+        </li>
+        <li class="howto-step">
+          <h2>AI 채팅창에 붙여넣기</h2>
+          <p>사용하는 AI 채팅창에 붙여넣고(휴대폰은 길게 눌러 붙여넣기, PC는 Ctrl+V 또는 ⌘+V), 다룰 주제나 자료를 함께 적어 보내세요.</p>
+        </li>
+        <li class="howto-step">
+          <h2>버튼 레시피 따라 하기</h2>
+          <p>화면 <strong>왼쪽 끝의 탭</strong>을 누르면 버튼 레시피가 열려요. 레시피는 결과물 하나를 만들기 위해 어떤 버튼을 어떤 순서로 누르면 되는지 알려줘요. 위쪽 카테고리를 눌러 원하는 분야만 볼 수 있어요.</p>
+          <ol class="recipe-steps howto-recipe" aria-hidden="true">
+            <li class="recipe-step is-input"><span class="step-badge">입력</span><span class="step-label">관심 산업/주제 입력</span></li>
+            <li class="recipe-step"><span class="step-badge">3</span><span class="step-label">아이디어 도출</span></li>
+            <li class="recipe-step"><span class="step-badge">31</span><span class="step-label">SWOT 분석</span></li>
+            <li class="recipe-step"><span class="step-badge">61</span><span class="step-label">원페이지보고</span></li>
+          </ol>
+          <ul class="howto-list">
+            <li><strong>입력</strong> 단계는 내가 AI에게 직접 알려줄 내용이에요.</li>
+            <li><strong>숫자</strong>는 눌러야 할 버튼 번호예요. 위에서부터 차례로 버튼을 눌러 복사하고, 같은 AI 대화에 이어서 붙여넣으세요.</li>
+            <li>레시피를 열어 둔 채로 오른쪽 버튼을 누를 수 있어요. 다 쓰면 탭을 다시 누르거나 PC에서 Esc 키로 닫아요.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p class="howto-tip">헤더 왼쪽의 로고를 누르면 언제든 첫 화면으로 돌아가요.</p>
+      <div class="howto-actions"><a class="btn btn-primary" href="./#buttons">버튼 보러 가기</a></div>
+    </article>
+
+    <article class="container howto-inner" data-lang-block="en" lang="en">
+      <p class="eyebrow">How to Use</p>
+      <h1>How to use BUTTON</h1>
+      <p class="howto-lead">Tap a button to copy a ready-made AI prompt, then paste it into the AI chat you use. Use several buttons in order to build deliverables like reports and pitch decks.</p>
+
+      <ol class="howto-steps">
+        <li class="howto-step">
+          <h2>Pick a language</h2>
+          <p>Tap the <strong>Korean flag</strong> for Korean or the <strong>US flag</strong> for English, top right. Button names, copied prompts and button recipes all switch to that language, and your choice is remembered next time.</p>
+        </li>
+        <li class="howto-step">
+          <h2>Find a button</h2>
+          <p>Scroll down from the first screen to reach the buttons. There are 90 buttons, 30 per screen across three screens. On a computer, each turn of the mouse wheel moves one screen.</p>
+        </li>
+        <li class="howto-step">
+          <h2>Tap to copy the prompt</h2>
+          <p>Tapping a button copies its prompt to your clipboard, and a notice appears at the bottom of the screen.</p>
+          <div class="howto-demo" aria-hidden="true">
+            <span class="tile copied">Idea Brainstorm</span>
+            <span class="howto-toast">Prompt copied</span>
+          </div>
+          <p class="howto-note">If you see "No prompt entered yet", that button isn't ready yet.</p>
+        </li>
+        <li class="howto-step">
+          <h2>Paste into your AI chat</h2>
+          <p>Paste it into the AI chat you use (long-press and Paste on a phone, Ctrl+V or ⌘+V on a computer), add your topic or material, and send.</p>
+        </li>
+        <li class="howto-step">
+          <h2>Follow a button recipe</h2>
+          <p>Tap the <strong>tab on the left edge</strong> of the screen to open Button Recipes. Each recipe shows which buttons to press, in which order, to build one deliverable. Tap a category at the top to narrow the list.</p>
+          <ol class="recipe-steps howto-recipe" aria-hidden="true">
+            <li class="recipe-step is-input"><span class="step-badge">Input</span><span class="step-label">Enter Target Industry/Topic</span></li>
+            <li class="recipe-step"><span class="step-badge">3</span><span class="step-label">Idea Brainstorm</span></li>
+            <li class="recipe-step"><span class="step-badge">31</span><span class="step-label">SWOT Analysis</span></li>
+            <li class="recipe-step"><span class="step-badge">61</span><span class="step-label">1-Page Report</span></li>
+          </ol>
+          <ul class="howto-list">
+            <li><strong>Input</strong> is what you tell the AI yourself.</li>
+            <li><strong>Numbers</strong> are the buttons to press. Go top to bottom, copying each one and pasting it into the same AI conversation.</li>
+            <li>You can keep the recipes open while tapping buttons. Close them by tapping the tab again, or with Esc on a computer.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p class="howto-tip">Tap the logo at the top left anytime to go back to the first screen.</p>
+      <div class="howto-actions"><a class="btn btn-primary" href="./#buttons">Go to the buttons</a></div>
+    </article>
+
+    <footer class="site-footer howto-footer">
+      <p>&copy; <span id="year"></span> BUTTON. All rights reserved.</p>
+    </footer>
+  </main>
+
+
+  <script src="js/main.js?v=dev"></script>
+  <script src="js/i18n.js?v=dev"></script>
+  <script src="js/flow-bg.js?v=dev"></script>
+</body>
+</html>

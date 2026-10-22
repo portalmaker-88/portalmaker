@@ -16,11 +16,12 @@
       skip: '본문으로 건너뛰기',
       eyebrow: 'Back to home',
       lead: '한두 문장으로 사이트를 소개하는 문구가 들어갑니다.',
-      primary: '주요 버튼',
+      primary: 'How to Use',
       secondary: '보조 버튼',
       buttonsLabel: '버튼 목록',
       langLabel: '언어 선택',
       logoLabel: '맨 위로',
+      homeLabel: '홈으로',
       tile: '버튼',
       copied: '프롬프트를 복사했어요',
       noPrompt: '아직 입력된 프롬프트가 없어요',
@@ -30,11 +31,12 @@
       skip: 'Skip to content',
       eyebrow: 'Back to home',
       lead: 'A sentence or two introducing the site goes here.',
-      primary: 'Main button',
+      primary: 'How to Use',
       secondary: 'Secondary button',
       buttonsLabel: 'Button list',
       langLabel: 'Choose language',
       logoLabel: 'Back to top',
+      homeLabel: 'Home',
       tile: 'Button',
       copied: 'Prompt copied',
       noPrompt: 'No prompt entered yet',
@@ -174,5 +176,5 @@
   });
 
   apply();
-  loadSheet();
+  if (tiles.length) loadSheet(); // How to Use 페이지처럼 버튼이 없는 페이지는 시트를 안 읽음
 })();

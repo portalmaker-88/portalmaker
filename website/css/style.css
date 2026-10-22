@@ -347,3 +347,54 @@ html { scroll-snap-type: y mandatory; }
 @media (prefers-reduced-motion: reduce) {
   .side-panel, .panel-open .side-panel, .panel-tab, .panel-tab svg { transition: none; }
 }
+
+/* ===== How to Use 페이지 (how-to-use.html) ===== */
+.page-howto { scroll-snap-type: none; }
+/* 한국어/영어 내용 중 지금 언어만 보여줌 (i18n.js가 <html lang>을 바꿈) */
+html[lang="en"] [data-lang-block="ko"], html:not([lang="en"]) [data-lang-block="en"] { display: none; }
+.howto { color: #ece6da; color-scheme: dark; }
+.howto-inner { max-width: 760px; padding-top: clamp(2rem, 7vh, 4.5rem); padding-bottom: 3rem; }
+.howto .eyebrow { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .8rem; font-weight: 400; letter-spacing: .08em; color: #8f897d; margin-bottom: .6rem; }
+.howto h1 { font-family: "Noto Sans KR", var(--font-sans); font-weight: 800; font-size: clamp(2rem, 7vw, 3.25rem); line-height: 1.1; }
+.howto-lead { color: #cfc8bb; font-size: 1.05rem; max-width: 46ch; margin-bottom: 2.5rem; }
+.howto strong { color: #fff; }
+
+/* 단계: 왼쪽에 큰 번호, 카드처럼 살짝 비치는 바탕 */
+.howto-steps { list-style: none; margin: 0; padding: 0; counter-reset: howto; display: grid; gap: 14px; }
+.howto-step {
+  counter-increment: howto;
+  position: relative;
+  padding: 1.25rem 1.25rem 1.1rem 4rem;
+  border: 1px solid #3a3833; border-radius: var(--radius);
+  background: rgba(20, 20, 19, .82);
+}
+.howto-step::before {
+  content: counter(howto, decimal-leading-zero);
+  position: absolute; left: 1.15rem; top: 1.2rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 1.05rem; font-weight: 600; color: #c8463c;
+}
+.howto-step h2 { font-size: 1.15rem; margin: 0 0 .5rem; }
+.howto-step p { color: #cfc8bb; font-size: .95rem; margin-bottom: .75rem; }
+.howto-step > :last-child { margin-bottom: 0; }
+.howto-note { color: #8f897d !important; font-size: .85rem !important; }
+.howto-list { margin: .9rem 0 0; padding-left: 1.1rem; color: #cfc8bb; font-size: .92rem; }
+.howto-list li + li { margin-top: .35rem; }
+
+/* 예시 그림: 실제 버튼·알림·레시피와 같은 모양 */
+.howto-demo { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: .25rem 0 .9rem; }
+.howto-demo .tile { width: auto; height: 44px; padding: 0 1.4rem; font-size: .95rem; }
+.howto-toast {
+  padding: .5rem 1rem; border: 1px solid #3a3833; border-radius: 999px;
+  background: #141413; font-size: .85rem; font-weight: 600;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .4);
+}
+.howto-recipe { margin: .25rem 0 0; padding: .8rem 1rem; border: 1px solid #2a2927; border-radius: 10px; background: #141413; }
+
+.howto-tip { color: #8f897d; font-size: .9rem; margin: 1.75rem 0 0; }
+.howto-actions { margin-top: 1.25rem; }
+.howto-footer { position: static; height: auto; padding-block: 1.5rem; }
+
+@media (max-width: 480px) {
+  .howto-step { padding: 1.1rem 1rem 1rem 3.1rem; }
+  .howto-step::before { left: .9rem; font-size: .95rem; }
+}
