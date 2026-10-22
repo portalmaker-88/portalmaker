@@ -39,7 +39,7 @@
         <div class="hero-brand" data-path-draw data-text="BUTTON|PORTALMAKER" data-from="#fff2d0" data-to="#c8463c" data-stroke="4"></div>
         <p class="lead" data-i18n="lead">한두 문장으로 사이트를 소개하는 문구가 들어갑니다.</p>
         <div class="hero-actions">
-          <button type="button" class="btn btn-primary" id="open-panel" aria-controls="side-panel" aria-expanded="false" data-i18n="primary">주요 버튼</button>
+          <a class="btn btn-primary" href="#buttons" data-i18n="primary">주요 버튼</a>
           <a class="btn btn-ghost" href="#buttons" data-i18n="secondary">보조 버튼</a>
         </div>
       </div>
@@ -154,8 +154,7 @@
     </section>
   </main>
 
-  <!-- 주요 버튼으로 여는 왼쪽 사이드바 페이지 (내용은 js/side-panel.js) -->
-  <div class="panel-backdrop" id="panel-backdrop" hidden></div>
+  <!-- 왼쪽 사이드바: 버튼 레시피 (내용은 js/side-panel.js). 열려 있어도 메인 화면 버튼은 그대로 누를 수 있음 -->
   <aside class="side-panel" id="side-panel" aria-labelledby="side-panel-title" aria-hidden="true" inert>
     <div class="side-panel-scroll" tabindex="-1">
       <h2 class="side-panel-title" id="side-panel-title"></h2>
@@ -163,10 +162,11 @@
       <div class="recipe-filters" id="recipe-filters" role="group"></div>
       <ol class="recipe-list" id="recipe-list"></ol>
     </div>
-    <button type="button" class="panel-tab" id="close-panel" aria-controls="side-panel" aria-label="사이드바 접기" data-i18n-label="closePanel">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
   </aside>
+  <!-- 여닫는 탭: 닫혀 있으면 화면 왼쪽 끝, 열려 있으면 사이드바 오른쪽 끝(스크롤바 옆)에 붙어 있음 -->
+  <button type="button" class="panel-tab" id="panel-tab" aria-controls="side-panel" aria-expanded="false" aria-label="사이드바 열기">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
 
 
   <script src="js/main.js?v=dev"></script>

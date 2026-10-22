@@ -9,7 +9,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   let lockedUntil = 0;
 
   addEventListener('wheel', (e) => {
-    if (document.body.classList.contains('panel-open')) return; // 사이드바가 열려 있으면 그 안에서 스크롤
+    if (e.target.closest && e.target.closest('.side-panel')) return; // 사이드바 위에서는 사이드바만 스크롤
     if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX) || Math.abs(e.deltaY) < 4) return;
     const top = headerH();
     const dir = e.deltaY > 0 ? 1 : -1;

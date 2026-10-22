@@ -1,4 +1,5 @@
-// 주요 버튼 → 왼쪽에서 나오는 사이드바: 버튼 레시피 목록
+// 왼쪽 끝의 탭으로 여닫는 사이드바: 버튼 레시피 목록
+// 열려 있어도 메인 화면은 그대로 쓸 수 있음 (가림막 없음, 메인 버튼을 눌러도 안 닫힘)
 //
 // 내용은 구글 스프레드시트 "burron recipe"에서 불러옴. 한국 국기면 A~D열, 미국 국기면 E~H열을 보여줌.
 // 열 순서: A 번호 | B 카테고리 | C 결과물 이름 | D 레시피 | E No. | F Category | G Deliverable Name | H Recipe
@@ -11,14 +12,12 @@
   var CACHE_KEY = 'sheet-recipes';
 
   var TEXT = {
-    ko: { title: '버튼 레시피', intro: '버튼을 순서대로 누르면 결과물이 완성돼요.', all: '전체', filters: '카테고리', input: '입력', count: '개' },
-    en: { title: 'Button Recipes', intro: 'Press the buttons in order to build each deliverable.', all: 'All', filters: 'Categories', input: 'Input', count: '' }
+    ko: { title: '버튼 레시피', intro: '버튼을 순서대로 누르면 결과물이 완성돼요.', all: '전체', filters: '카테고리', input: '입력', open: '사이드바 열기', close: '사이드바 접기' },
+    en: { title: 'Button Recipes', intro: 'Press the buttons in order to build each deliverable.', all: 'All', filters: 'Categories', input: 'Input', open: 'Open sidebar', close: 'Close sidebar' }
   };
 
   var panel = document.getElementById('side-panel');
-  var backdrop = document.getElementById('panel-backdrop');
-  var openBtn = document.getElementById('open-panel');
-  var closeBtn = document.getElementById('close-panel');
+  var tab = document.getElementById('panel-tab');
   var scroller = panel.querySelector('.side-panel-scroll');
   var titleEl = document.getElementById('side-panel-title');
   var introEl = document.getElementById('side-panel-intro');
@@ -78,6 +77,7 @@
     var t = TEXT[lang()];
     var cats = categories();
     if (category >= cats.keys.length) category = -1;
+    tab.setAttribute('aria-label', isOpen() ? t.close : t.open);
     titleEl.textContent = t.title;
     introEl.textContent = t.intro;
     renderFilters(cats);
@@ -108,27 +108,19 @@
     });
   }
 
+  function isOpen() { return document.body.classList.contains('panel-open'); }
+
   function setOpen(open) {
     document.body.classList.toggle('panel-open', open);
     panel.setAttribute('aria-hidden', String(!open));
     if (open) panel.removeAttribute('inert'); else panel.setAttribute('inert', '');
-    openBtn.setAttribute('aria-expanded', String(open));
-    if (open) {
-      backdrop.hidden = false;
-      requestAnimationFrame(function () { backdrop.classList.add('show'); });
-      scroller.focus({ preventScroll: true });
-    } else {
-      backdrop.classList.remove('show');
-      setTimeout(function () { if (!backdrop.classList.contains('show')) backdrop.hidden = true; }, 300);
-      openBtn.focus({ preventScroll: true });
-    }
+    tab.setAttribute('aria-expanded', String(open));
+    tab.setAttribute('aria-label', TEXT[lang()][open ? 'close' : 'open']);
   }
 
-  openBtn.addEventListener('click', function () { setOpen(true); });
-  closeBtn.addEventListener('click', function () { setOpen(false); });
-  backdrop.addEventListener('click', function () { setOpen(false); });
+  tab.addEventListener('click', function () { setOpen(!isOpen()); });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && document.body.classList.contains('panel-open')) setOpen(false);
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); tab.focus(); }
   });
 
   // 언어 버튼을 누르면 i18n.js가 <html lang>을 바꿈 → 따라서 다시 그림

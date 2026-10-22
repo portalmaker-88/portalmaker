@@ -246,9 +246,9 @@ html { scroll-snap-type: y mandatory; }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-/* ===== 왼쪽 사이드바 페이지 (주요 버튼으로 열고, 오른쪽 마름모 탭으로 접음) ===== */
+/* ===== 왼쪽 사이드바: 버튼 레시피 (왼쪽 끝 사다리꼴 탭으로 여닫음) ===== */
+:root { --panel-w: min(380px, 82vw); } /* 사이드바 폭. 휴대폰에서도 옆에 메인 화면이 조금 보이게 */
 .side-panel {
-  --panel-w: min(480px, calc(100vw - 44px)); /* 접는 탭이 튀어나올 자리를 남김 */
   position: fixed; top: 0; bottom: 0; left: 0; z-index: 70;
   width: var(--panel-w);
   background: #141413; color: #ece6da;
@@ -262,19 +262,23 @@ html { scroll-snap-type: y mandatory; }
 .panel-open .side-panel { transform: none; visibility: visible; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
 .side-panel-scroll {
   height: 100%; overflow-y: auto; overscroll-behavior: contain;
-  padding: max(28px, env(safe-area-inset-top, 0px)) 40px max(28px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  padding: max(24px, env(safe-area-inset-top, 0px)) 24px max(24px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
   outline: none;
+  scrollbar-width: thin; scrollbar-color: #3a3833 #141413;  /* 스크롤바도 사이드바 색에 맞춤 → 오른쪽 탭과 이어져 보임 */
 }
+.side-panel-scroll::-webkit-scrollbar { width: 8px; }
+.side-panel-scroll::-webkit-scrollbar-track { background: #141413; }
+.side-panel-scroll::-webkit-scrollbar-thumb { background: #3a3833; border-radius: 4px; }
 .side-panel-title { font-family: "Noto Sans KR", var(--font-sans); font-weight: 800; font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: .4rem; }
 .side-panel-intro { color: #8f897d; font-size: .9rem; margin-bottom: 1.1rem; }
 
 /* 카테고리 칩: 한 줄로 옆으로 밀어서 보고, 스크롤해도 맨 위에 붙어 있음 */
 .recipe-filters {
-  position: sticky; top: calc(-1 * max(28px, env(safe-area-inset-top, 0px))); z-index: 1;
+  position: sticky; top: calc(-1 * max(24px, env(safe-area-inset-top, 0px))); z-index: 1;
   display: flex; gap: 6px;
   overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
-  margin: 0 -40px 0 calc(-1 * max(20px, env(safe-area-inset-left, 0px)));
-  padding: 10px 40px 12px max(20px, env(safe-area-inset-left, 0px));
+  margin: 0 -24px 0 calc(-1 * max(20px, env(safe-area-inset-left, 0px)));
+  padding: 10px 24px 12px max(20px, env(safe-area-inset-left, 0px));
   background: #141413; border-bottom: 1px solid #3a3833;
 }
 .recipe-filters::-webkit-scrollbar { display: none; }
@@ -311,36 +315,35 @@ html { scroll-snap-type: y mandatory; }
 .recipe-step.is-input { color: #cfc8bb; }
 .recipe-step.is-input .step-badge { background: none; border: 1px dashed #8f897d; color: #8f897d; font-family: inherit; font-size: .7rem; }
 
-/* 접는 탭: 가로로 누운 마름모(세로 마름모를 90도 돌린 모양)가 사이드바 오른쪽 가장자리에 반쯤 튀어나옴 */
+/* 여닫는 탭: 사다리꼴. 긴 변이 붙는 쪽(닫히면 화면 왼쪽 끝, 열리면 사이드바 오른쪽 끝), 짧은 변이 바깥쪽.
+   사이드바와 같은 바탕·테두리 색이라 사이드바(스크롤바)에서 그대로 튀어나온 것처럼 보임.
+   화면에 고정돼 있어서 스크롤해도 늘 같은 자리에 있음 */
 .panel-tab {
-  position: absolute; top: 50%; right: 0;
-  width: 76px; height: 52px; padding: 0;
-  transform: translate(50%, -50%);
+  --tab-w: 26px; --tab-h: 96px;
+  --tab-shape: polygon(0 0, 100% 20%, 100% 80%, 0 100%);
+  position: fixed; top: 50%; left: 0; z-index: 71;
+  width: var(--tab-w); height: var(--tab-h); padding: 0 2px 0 0;
+  transform: translate(0, -50%);
   border: 0; cursor: pointer;
-  background: #8f897d;      /* 테두리 색: 바깥 마름모 */
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  display: flex; align-items: center; justify-content: flex-end;
+  background: #3a3833;      /* 바깥 사다리꼴 = 테두리 색 */
+  clip-path: var(--tab-shape);
+  display: flex; align-items: center; justify-content: center;
   color: #ece6da;
   -webkit-tap-highlight-color: transparent;
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), background-color .15s;
 }
-.panel-tab::before {        /* 안쪽 마름모 = 탭 바탕 */
-  content: ""; position: absolute; inset: 1.5px 2px;
+.panel-tab::before {        /* 안쪽 사다리꼴 = 탭 바탕 (붙는 쪽은 테두리 없음) */
+  content: ""; position: absolute; top: 1px; bottom: 1px; left: 0; right: 1px;
   background: #141413;
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  clip-path: var(--tab-shape);
   transition: background-color .15s;
 }
-.panel-tab svg { position: relative; width: 18px; height: 18px; margin-right: 12px; }
+.panel-tab svg { position: relative; width: 16px; height: 16px; transition: transform .35s; }
+.panel-open .panel-tab { transform: translate(calc(var(--panel-w) - 1px), -50%); }  /* 사이드바 테두리와 겹쳐서 이어 붙임 */
+.panel-open .panel-tab svg { transform: scaleX(-1); }
+.panel-tab:hover, .panel-tab:focus-visible { outline: none; background: #c8463c; }
 .panel-tab:hover::before { background: #2a1d1b; }
-.panel-tab:hover { background: #c8463c; }
-.panel-tab:focus-visible { outline: none; background: #c8463c; }
-
-.panel-backdrop {
-  position: fixed; inset: 0; z-index: 60;
-  background: rgba(0, 0, 0, .5);
-  opacity: 0; transition: opacity .3s;
-}
-.panel-backdrop.show { opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
-  .side-panel, .panel-open .side-panel, .panel-backdrop { transition: none; }
+  .side-panel, .panel-open .side-panel, .panel-tab, .panel-tab svg { transition: none; }
 }

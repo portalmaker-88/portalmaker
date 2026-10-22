@@ -24,8 +24,7 @@
       tile: '버튼',
       copied: '프롬프트를 복사했어요',
       noPrompt: '아직 입력된 프롬프트가 없어요',
-      copyFail: '복사하지 못했어요. 다시 눌러 주세요',
-      closePanel: '사이드바 접기'
+      copyFail: '복사하지 못했어요. 다시 눌러 주세요'
     },
     en: {
       skip: 'Skip to content',
@@ -39,8 +38,7 @@
       tile: 'Button',
       copied: 'Prompt copied',
       noPrompt: 'No prompt entered yet',
-      copyFail: 'Could not copy. Please try again',
-      closePanel: 'Close sidebar'
+      copyFail: 'Could not copy. Please try again'
     }
   };
 
