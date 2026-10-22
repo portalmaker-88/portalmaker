@@ -12,7 +12,7 @@
   <meta property="og:description" content="생각은 버튼이 할게요. 당신은 누르기만 하세요.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Noto+Sans+KR:wght@800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
   <link rel="icon" href="assets/favicon-32.png?v=dev" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon.svg?v=dev" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=dev">
@@ -43,10 +43,12 @@
           <a class="btn btn-primary" href="how-to-use.html" data-i18n="primary">How to Use</a>
         </div>
       </div>
+      <a class="scroll-cue" href="#buttons"><span data-i18n="cue">버튼 보러 가기</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </section>
 
     <section class="buttons" id="buttons" aria-label="버튼 목록" data-i18n-label="buttonsLabel">
-      <div class="button-page container">
+      <div class="button-page container" id="page-1">
+        <p class="page-label"><span class="page-label-kind">BUTTONS</span> <span class="page-label-range">01 — 30</span></p>
         <ul class="button-grid">
           <li><a class="tile" href="#">버튼 01</a></li>
           <li><a class="tile" href="#">버튼 02</a></li>
@@ -80,7 +82,8 @@
           <li><a class="tile" href="#">버튼 30</a></li>
         </ul>
       </div>
-      <div class="button-page container">
+      <div class="button-page container" id="page-2">
+        <p class="page-label"><span class="page-label-kind">BUTTONS</span> <span class="page-label-range">31 — 60</span></p>
         <ul class="button-grid">
           <li><a class="tile" href="#">버튼 31</a></li>
           <li><a class="tile" href="#">버튼 32</a></li>
@@ -114,7 +117,8 @@
           <li><a class="tile" href="#">버튼 60</a></li>
         </ul>
       </div>
-      <div class="button-page container">
+      <div class="button-page container" id="page-3">
+        <p class="page-label"><span class="page-label-kind">BUTTONS</span> <span class="page-label-range">61 — 90</span></p>
         <ul class="button-grid">
           <li><a class="tile" href="#">버튼 61</a></li>
           <li><a class="tile" href="#">버튼 62</a></li>
@@ -154,6 +158,13 @@
     </section>
   </main>
 
+  <!-- 오른쪽 위치 표시: 지금 보고 있는 버튼 화면 (누르면 그 화면으로 이동) -->
+  <nav class="page-dots" aria-label="버튼 화면" data-i18n-label="dotsLabel">
+    <a href="#page-1" aria-label="버튼 01–30">01</a>
+    <a href="#page-2" aria-label="버튼 31–60">31</a>
+    <a href="#page-3" aria-label="버튼 61–90">61</a>
+  </nav>
+
   <!-- 왼쪽 사이드바: 버튼 레시피 (내용은 js/side-panel.js). 열려 있어도 메인 화면 버튼은 그대로 누를 수 있음 -->
   <aside class="side-panel" id="side-panel" aria-labelledby="side-panel-title" aria-hidden="true" inert>
     <div class="side-panel-scroll" tabindex="-1">
@@ -164,8 +175,9 @@
     </div>
   </aside>
   <!-- 여닫는 탭: 닫혀 있으면 화면 왼쪽 끝, 열려 있으면 사이드바 오른쪽 끝(스크롤바 옆)에 붙어 있음 -->
-  <button type="button" class="panel-tab" id="panel-tab" aria-controls="side-panel" aria-expanded="false" aria-label="사이드바 열기">
+  <button type="button" class="panel-tab" id="panel-tab" aria-controls="side-panel" aria-expanded="false" aria-label="버튼 레시피 열기">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="panel-tab-label" id="panel-tab-label" aria-hidden="true">레시피</span>
   </button>
 
 

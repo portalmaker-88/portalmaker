@@ -21,6 +21,8 @@
       langLabel: '언어 선택',
       logoLabel: '맨 위로',
       homeLabel: '홈으로',
+      cue: '버튼 보러 가기',
+      dotsLabel: '버튼 화면',
       tile: '버튼',
       copied: '프롬프트를 복사했어요',
       noPrompt: '아직 입력된 프롬프트가 없어요',
@@ -35,6 +37,8 @@
       langLabel: 'Choose language',
       logoLabel: 'Back to top',
       homeLabel: 'Home',
+      cue: 'See the buttons',
+      dotsLabel: 'Button screens',
       tile: 'Button',
       copied: 'Prompt copied',
       noPrompt: 'No prompt entered yet',
@@ -68,9 +72,21 @@
     tiles.forEach(function (tile, i) {
       var n = i + 1;
       var row = rows[n] || {};
-      tile.textContent = (lang === 'ko' ? row.ko : row.en) || t.tile + ' ' + pad(n);
+      var label = document.createElement('span');
+      label.className = 'tile-label';
+      label.textContent = (lang === 'ko' ? row.ko : row.en) || t.tile + ' ' + pad(n);
+      tile.textContent = '';
+      tile.appendChild(label);
       var prompt = lang === 'ko' ? row.promptKo : row.promptEn;
-      if (prompt) tile.setAttribute('data-prompt', prompt); else tile.removeAttribute('data-prompt');
+      if (prompt) {
+        tile.setAttribute('data-prompt', prompt);
+        // PC에서 마우스를 올리면 프롬프트 앞부분을 미리 보여줌
+        var flat = prompt.replace(/\s+/g, ' ');
+        tile.title = flat.length > 140 ? flat.slice(0, 140) + '…' : flat;
+      } else {
+        tile.removeAttribute('data-prompt');
+        tile.removeAttribute('title');
+      }
     });
   }
 
@@ -156,16 +172,26 @@
     return Promise.resolve(fallbackCopy(text));
   }
 
+  // 버튼 하나의 프롬프트 복사. 레시피 사이드바(side-panel.js)도 이걸 씀. 복사됐으면 true
+  function copyTile(tile) {
+    var t = TEXT[lang];
+    var prompt = tile && tile.getAttribute('data-prompt');
+    if (!prompt) { showToast(t.noPrompt); return Promise.resolve(false); }
+    return copy(prompt).then(function (ok) {
+      showToast(ok ? t.copied : t.copyFail);
+      if (ok) {
+        tile.classList.add('copied', 'used'); // used: 이번 방문에서 복사한 버튼 표시 (새로고침하면 사라짐)
+        setTimeout(function () { tile.classList.remove('copied'); }, 600);
+      }
+      return ok;
+    });
+  }
+  window.ButtonApp = { copyButton: function (n) { return copyTile(tiles[n - 1]); } };
+
   tiles.forEach(function (tile) {
     tile.addEventListener('click', function (e) {
       e.preventDefault();
-      var t = TEXT[lang];
-      var prompt = tile.getAttribute('data-prompt');
-      if (!prompt) { showToast(t.noPrompt); return; }
-      copy(prompt).then(function (ok) {
-        showToast(ok ? t.copied : t.copyFail);
-        if (ok) { tile.classList.add('copied'); setTimeout(function () { tile.classList.remove('copied'); }, 600); }
-      });
+      copyTile(tile);
     });
   });
 

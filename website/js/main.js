@@ -39,8 +39,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const page = pages[0], grid = page.querySelector('.button-grid');
     const n = grid.children.length;
     const cs = getComputedStyle(page), gs = getComputedStyle(grid);
+    const label = page.querySelector('.page-label');
+    const labelH = label ? label.offsetHeight + parseFloat(getComputedStyle(label).marginBottom) : 0;
     const W = page.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    const H = page.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const H = page.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - labelH;
     const gap = parseFloat(gs.rowGap) || 0;
     let best = null;
     for (let cols = 1; cols <= n; cols++) {
@@ -63,4 +65,22 @@ document.getElementById('year').textContent = new Date().getFullYear();
   }
   fit();
   addEventListener('resize', fit);
+})();
+
+// 오른쪽 위치 표시: 버튼 화면이 보일 때만 나타나고, 지금 화면의 번호를 강조
+(() => {
+  const dots = document.querySelector('.page-dots');
+  if (!dots) return;
+  const links = [...dots.querySelectorAll('a')];
+  const pages = links.map((a) => document.querySelector(a.getAttribute('href')));
+  function update() {
+    const mid = innerHeight / 2;
+    let cur = -1;
+    pages.forEach((p, i) => { const r = p.getBoundingClientRect(); if (r.top <= mid && r.bottom > mid) cur = i; });
+    dots.classList.toggle('show', cur >= 0);
+    links.forEach((a, i) => a.setAttribute('aria-current', String(i === cur)));
+  }
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
 })();
