@@ -15,7 +15,7 @@
     ko: {
       skip: '본문으로 건너뛰기',
       eyebrow: 'Back to home',
-      lead: '한두 문장으로 사이트를 소개하는 문구가 들어갑니다.',
+      lead: '생각은 버튼이 할게요. 당신은 누르기만 하세요.',
       primary: 'How to Use',
       secondary: '보조 버튼',
       buttonsLabel: '버튼 목록',
@@ -30,7 +30,7 @@
     en: {
       skip: 'Skip to content',
       eyebrow: 'Back to home',
-      lead: 'A sentence or two introducing the site goes here.',
+      lead: 'Let the buttons do the thinking. You just press.',
       primary: 'How to Use',
       secondary: 'Secondary button',
       buttonsLabel: 'Button list',
