@@ -34,7 +34,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 (() => {
   const pages = [...document.querySelectorAll('.button-page')];
   if (!pages.length) return;
-  const RATIO = 3, MIN_H = 36, MAX_H = 96, WIDTH_SCALE = 2 / 3;
+  const RATIO = 3, MIN_H = 36, MAX_H = 96, WIDTH_SCALE = 2 / 3, PHONE_WIDTH_SCALE = 0.8;
   function fit() {
     const page = pages[0], grid = page.querySelector('.button-grid');
     const n = grid.children.length;
@@ -58,7 +58,9 @@ document.getElementById('year').textContent = new Date().getFullYear();
     pages.forEach((p) => {
       p.style.setProperty('--cols', best.cols);
       p.style.setProperty('--rows', best.rows);
-      p.style.setProperty('--tile-w', Math.floor(best.w * WIDTH_SCALE) + 'px');
+      // 휴대폰은 화면이 좁아 버튼 이름이 잘리지 않게 조금 더 넓게
+      const scale = W < 600 ? PHONE_WIDTH_SCALE : WIDTH_SCALE;
+      p.style.setProperty('--tile-w', Math.floor(best.w * scale) + 'px');
       p.style.setProperty('--tile-h', Math.floor(best.h) + 'px');
       p.classList.add('is-fitted');
     });

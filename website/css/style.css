@@ -241,12 +241,18 @@ html { scroll-snap-type: y mandatory; }
 }
 /* 버튼 이름: 길면 두 줄까지 보이고 나머지는 … */
 .tile-label { max-width: 100%; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
-/* 버튼이 납작할 때(휴대폰): 이름을 한 줄로 조금 작게, 넘치면 … */
+/* 버튼이 납작할 때(휴대폰): 번호 바로 옆에 이름을 붙이고, 이름은 두 줄까지 */
 .button-grid li { container-type: size; }
-@container (max-height: 56px) {
-  .tile { padding: 0 .6rem; line-height: 1.15; }
-  .tile-num { font-size: .62rem; }
-  .tile-label { display: block; font-size: .8rem; letter-spacing: -.01em; white-space: nowrap; text-overflow: ellipsis; }
+@container (max-height: 56px) and (min-width: 130px) {
+  .tile { flex-direction: row; align-items: center; justify-content: flex-start; gap: .45em; padding: 0 .55rem 0 .6rem; line-height: 1.15; }
+  .tile-num { flex: none; font-size: .62rem; }
+  .tile-label { min-width: 0; font-size: .8rem; letter-spacing: -.01em; word-break: keep-all; }
+}
+/* 작은 휴대폰에서 3줄로 좁아진 버튼: 번호는 위, 이름은 그 아래 두 줄까지 */
+@container (max-height: 56px) and (max-width: 129.98px) {
+  .tile { padding: 0 .5rem; line-height: 1.12; }
+  .tile-num { font-size: .58rem; }
+  .tile-label { font-size: .74rem; letter-spacing: -.01em; word-break: keep-all; }
 }
 /* 이번 방문에서 이미 복사한 버튼: 오른쪽 위에 작은 점 */
 .tile.used::after {
