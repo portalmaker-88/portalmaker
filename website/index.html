@@ -17,6 +17,16 @@
   <link rel="icon" href="assets/favicon.svg?v=dev" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=dev">
   <link rel="stylesheet" href="css/style.css?v=dev">
+  <!-- Google Analytics (방문자 통계) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKL37FCS8F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PKL37FCS8F');
+    // 페이지에 30초 넘게 머문 방문 세기 (한 번만 보냄)
+    setTimeout(function () { gtag('event', 'stay_30s'); }, 30000);
+  </script>
   <!-- Google AdSense (자동 광고) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2568905754072938"
      crossorigin="anonymous"></script>

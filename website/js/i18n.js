@@ -179,7 +179,8 @@
   }
 
   // 버튼 하나의 프롬프트 복사. 레시피 사이드바(side-panel.js)도 이걸 씀. 복사됐으면 true
-  function copyTile(tile) {
+  // source: 'tile'(본문 버튼) 또는 'recipe'(레시피 사이드바)
+  function copyTile(tile, source) {
     var t = TEXT[lang];
     var prompt = tile && tile.getAttribute('data-prompt');
     if (!prompt) { showToast(t.noPrompt); return Promise.resolve(false); }
@@ -188,11 +189,13 @@
       if (ok) {
         tile.classList.add('copied', 'used'); // used: 이번 방문에서 복사한 버튼 표시 (새로고침하면 사라짐)
         setTimeout(function () { tile.classList.remove('copied'); }, 600);
+        // 구글 애널리틱스: 몇 번 버튼이 복사됐는지 기록
+        if (window.gtag) gtag('event', 'button_copy', { button_number: tiles.indexOf(tile) + 1, source: source || 'tile' });
       }
       return ok;
     });
   }
-  window.ButtonApp = { copyButton: function (n) { return copyTile(tiles[n - 1]); } };
+  window.ButtonApp = { copyButton: function (n) { return copyTile(tiles[n - 1], 'recipe'); } };
 
   tiles.forEach(function (tile) {
     tile.addEventListener('click', function (e) {
