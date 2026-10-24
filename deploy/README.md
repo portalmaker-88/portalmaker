@@ -48,6 +48,7 @@ bash ~/portalmaker/deploy/update.sh
 - `setup-server.sh`: 서버 최초 설정 스크립트
 - `update.sh`: 서버에서 git pull 후 사이트에 반영하는 스크립트
 - `fix-tunnel.sh`: Cloudflare 터널 사용 시 무한 리디렉션을 없애는 스크립트
+- `make-usb.sh`, `tunnel-token.sh`, `migrate-server.sh`: 서버를 다른 컴퓨터로 옮길 때 쓰는 스크립트 (아래 참고)
 
 ## 문제가 생기면
 - 설정 검사: `sudo nginx -t`
@@ -60,3 +61,16 @@ bash ~/portalmaker/deploy/update.sh
 ```bash
 sudo bash ~/portalmaker/deploy/fix-tunnel.sh button.backtohome.kr
 ```
+
+## 서버를 다른 컴퓨터로 옮기기 (예: 서피스 프로 3)
+터널을 쓰므로 DNS·인증서·공유기 설정은 그대로 둡니다. 새 컴퓨터를 같은 터널에 하나 더 붙였다가 옛 컴퓨터를 끄면 끝입니다.
+1. 옛 서버에서 설치 USB 만들기: `bash ~/portalmaker/deploy/make-usb.sh`
+2. 새 컴퓨터에 우분투 설치 → 터미널에서 `sudo apt install -y openssh-server git` → `hostname -I` 로 IP 확인
+3. 옛 서버에서 터널 토큰 확인: `bash ~/portalmaker/deploy/tunnel-token.sh`
+4. 새 서버에서:
+```bash
+git clone https://github.com/portalmaker-88/portalmaker.git ~/portalmaker
+sudo bash ~/portalmaker/deploy/migrate-server.sh 터널토큰
+```
+5. Cloudflare 대시보드에서 연결이 2개로 보이면, 옛 서버에서 `sudo systemctl disable --now cloudflared`
+   (되돌리기: 옛 서버에서 `sudo systemctl enable --now cloudflared`)
