@@ -6,14 +6,15 @@
 // 레시피 칸은 "입력할 것 ➔ 버튼 3 (이름) ➔ 버튼 31 (이름) ..." 형식이면 단계별로 나눠서 보여줌.
 // 시트는 "링크가 있는 모든 사용자: 뷰어"로 공유돼 있어야 방문자 브라우저가 읽을 수 있음.
 // 시트를 못 읽으면 지난번에 받아둔 내용, 그것도 없으면 data/recipes.js 스냅샷을 보여줌.
+// 레시피마다 공유 버튼이 있고, 주소 끝에 ?recipe=12 (또는 #recipe-12)를 붙이면 사이드바가 열리면서 그 레시피로 바로 감.
 (function () {
   var SHEET_ID = '1YcyBCKgujSsPVmM6In_CQPexoCBaBDb89czQfi4nkPc';
   var SHEET_GID = '0';
   var CACHE_KEY = 'sheet-recipes';
 
   var TEXT = {
-    ko: { title: '버튼 레시피', intro: '번호를 위에서부터 차례로 누르면 프롬프트가 복사돼요. 같은 AI 대화에 이어서 붙여넣으세요.', all: '전체', filters: '카테고리', input: '입력', open: '버튼 레시피 열기', close: '버튼 레시피 닫기', tab: '레시피', copy: '버튼 {n} 프롬프트 복사' },
-    en: { title: 'Button Recipes', intro: 'Tap the numbers from top to bottom to copy each prompt, then paste them into the same AI chat.', all: 'All', filters: 'Categories', input: 'Input', open: 'Open button recipes', close: 'Close button recipes', tab: 'RECIPES', copy: 'Copy button {n} prompt' }
+    ko: { title: '버튼 레시피', intro: '번호를 위에서부터 차례로 누르면 프롬프트가 복사돼요. 같은 AI 대화에 이어서 붙여넣으세요.', all: '전체', filters: '카테고리', input: '입력', open: '버튼 레시피 열기', close: '버튼 레시피 닫기', tab: '레시피', copy: '버튼 {n} 프롬프트 복사', share: '공유', shareLabel: '레시피 {n} 공유하기', linkCopied: '레시피 링크를 복사했어요', linkFail: '링크를 복사하지 못했어요' },
+    en: { title: 'Button Recipes', intro: 'Tap the numbers from top to bottom to copy each prompt, then paste them into the same AI chat.', all: 'All', filters: 'Categories', input: 'Input', open: 'Open button recipes', close: 'Close button recipes', tab: 'RECIPES', copy: 'Copy button {n} prompt', share: 'Share', shareLabel: 'Share recipe {n}', linkCopied: 'Recipe link copied', linkFail: 'Could not copy the link' }
   };
 
   var panel = document.getElementById('side-panel');
@@ -29,6 +30,8 @@
   var rows = window.RECIPES_SNAPSHOT || []; // 시트 한 줄 = 문자열 8칸
   var done = {}; // 복사한 단계: "레시피 줄 순번:단계 순번" → true (언어를 바꿔도 유지, 새로고침하면 사라짐)
   var category = -1; // 고른 카테고리 순번 (-1 = 전체). 언어가 바뀌어도 같은 카테고리가 유지되게 순번으로 기억
+  var target = linkedRecipe(); // 공유 링크로 들어온 레시피 번호 (강조 표시). 없으면 0
+  var userScrolled = false; // 시트를 새로 받아와도, 방문자가 이미 스크롤했으면 위치를 건드리지 않음
 
   function lang() { return document.documentElement.lang === 'en' ? 'en' : 'ko'; }
   function el(tag, cls, text) {
@@ -36,6 +39,39 @@
     if (cls) e.className = cls;
     if (text) e.textContent = text;
     return e;
+  }
+
+  // "레시피 12" → 12
+  function recipeNo(r) { var m = String(r[0] || '').match(/\d+/); return m ? parseInt(m[0], 10) : 0; }
+
+  // 주소의 ?recipe=12 또는 #recipe-12
+  function linkedRecipe() {
+    var m = location.search.match(/[?&]recipe=(\d+)/) || location.hash.match(/^#recipe-(\d+)$/);
+    return m ? parseInt(m[1], 10) : 0;
+  }
+
+  function shareUrl(n) { return location.origin + location.pathname + '?recipe=' + n; }
+
+  // 휴대폰처럼 공유 창이 있으면 그걸 열고, 없으면 링크를 복사하고 알림
+  function share(n, name) {
+    var t = TEXT[lang()];
+    var url = shareUrl(n);
+    var app = window.ButtonApp;
+    function track(method) { if (window.gtag) gtag('event', 'recipe_share', { recipe_number: n, method: method, language: lang() }); }
+    function copyLink() {
+      if (!app) return;
+      app.copyText(url).then(function (ok) {
+        app.toast(ok ? t.linkCopied : t.linkFail);
+        if (ok) track('copy');
+      });
+    }
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+      navigator.share({ title: name + ' | BUTTON', text: name, url: url }).then(function () { track('share'); }, function (e) {
+        if (!e || e.name !== 'AbortError') copyLink(); // 사용자가 공유 창을 닫은 건 그냥 둠
+      });
+    } else {
+      copyLink();
+    }
   }
 
   // 현재 언어의 4칸만 꺼냄
@@ -91,10 +127,22 @@
       if (category >= 0 && r[1] !== cats.keys[category]) return;
       var d = recipe(r);
       if (!d.name && !d.steps) return;
+      var no = recipeNo(r);
       var li = el('li', 'recipe');
+      if (no) li.id = 'recipe-' + no;
+      if (no && no === target) li.classList.add('is-target');
       var meta = el('div', 'recipe-meta');
       meta.appendChild(el('span', 'recipe-no', d.no));
       if (d.cat) meta.appendChild(el('span', 'recipe-cat', d.cat));
+      if (no) {
+        var sb = el('button', 'recipe-share');
+        sb.type = 'button';
+        sb.setAttribute('aria-label', t.shareLabel.replace('{n}', no));
+        sb.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+        sb.appendChild(el('span', '', t.share));
+        sb.addEventListener('click', function () { share(no, d.name); });
+        meta.appendChild(sb);
+      }
       li.appendChild(meta);
       li.appendChild(el('h3', 'recipe-name', d.name));
 
@@ -140,6 +188,8 @@
     tab.setAttribute('aria-label', TEXT[lang()][open ? 'close' : 'open']);
   }
 
+  ['wheel', 'touchmove'].forEach(function (ev) { scroller.addEventListener(ev, function () { userScrolled = true; }, { passive: true }); });
+
   tab.addEventListener('click', function () { setOpen(!isOpen()); tab.classList.remove('peek'); });
 
   // 처음 방문한 사람에게만 탭을 살짝 흔들어 보여줌
@@ -182,7 +232,9 @@
       if (!next.length) return;
       rows = next;
       try { localStorage.setItem(CACHE_KEY, JSON.stringify(rows)); } catch (e) {}
+      var keep = target && !userScrolled;
       render();
+      if (keep) goToTarget();
     };
     script.onerror = cleanup;
     setTimeout(function () { if (!done) cleanup(); }, 10000);
@@ -191,7 +243,22 @@
     document.head.appendChild(script);
   }
 
+  // 공유 링크로 들어오면 사이드바를 열고 그 레시피가 위에 오게 스크롤
+  function goToTarget() {
+    var li = target && document.getElementById('recipe-' + target);
+    if (!li) return;
+    // 카테고리 줄은 스크롤하면 위에 붙으므로(위 여백만큼 올라가서) 그 아래에 오게 맞춤
+    var stuck = filtersEl.offsetHeight - parseFloat(getComputedStyle(scroller).paddingTop);
+    scroller.scrollTop += li.getBoundingClientRect().top - scroller.getBoundingClientRect().top - stuck - 12;
+  }
+
   try { var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); if (cached && cached.length) rows = cached; } catch (e) {}
   render();
+  if (target) {
+    setOpen(true);
+    tab.classList.remove('peek');
+    goToTarget();
+    if (window.gtag) gtag('event', 'recipe_link_open', { recipe_number: target });
+  }
   loadSheet();
 })();

@@ -195,7 +195,11 @@
       return ok;
     });
   }
-  window.ButtonApp = { copyButton: function (n) { return copyTile(tiles[n - 1], 'recipe'); } };
+  window.ButtonApp = {
+    copyButton: function (n) { return copyTile(tiles[n - 1], 'recipe'); },
+    copyText: copy,
+    toast: showToast
+  };
 
   tiles.forEach(function (tile) {
     tile.addEventListener('click', function (e) {
