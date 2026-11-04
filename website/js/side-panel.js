@@ -13,8 +13,8 @@
   var CACHE_KEY = 'sheet-recipes';
 
   var TEXT = {
-    ko: { title: '버튼 레시피', intro: '번호를 위에서부터 차례로 누르면 프롬프트가 복사돼요. 같은 AI 대화에 이어서 붙여넣으세요.', all: '전체', filters: '카테고리', input: '입력', open: '버튼 레시피 열기', close: '버튼 레시피 닫기', tab: '레시피', copy: '버튼 {n} 프롬프트 복사', share: '공유', shareLabel: '레시피 {n} 공유하기', linkCopied: '레시피 링크를 복사했어요', linkFail: '링크를 복사하지 못했어요' },
-    en: { title: 'Button Recipes', intro: 'Tap the numbers from top to bottom to copy each prompt, then paste them into the same AI chat.', all: 'All', filters: 'Categories', input: 'Input', open: 'Open button recipes', close: 'Close button recipes', tab: 'RECIPES', copy: 'Copy button {n} prompt', share: 'Share', shareLabel: 'Share recipe {n}', linkCopied: 'Recipe link copied', linkFail: 'Could not copy the link' }
+    ko: { title: '버튼 레시피', intro: '번호를 위에서부터 차례로 누르면 프롬프트가 복사돼요. 같은 AI 대화에 이어서 붙여넣고, AI가 질문하면 답한 뒤 다음 번호로 넘어가세요.', all: '전체', filters: '카테고리', input: '답변', open: '버튼 레시피 열기', close: '버튼 레시피 닫기', tab: '레시피', copy: '버튼 {n} 프롬프트 복사', share: '공유', shareLabel: '레시피 {n} 공유하기', linkCopied: '레시피 링크를 복사했어요', linkFail: '링크를 복사하지 못했어요' },
+    en: { title: 'Button Recipes', intro: 'Tap the numbers from top to bottom to copy each prompt and paste it into the same AI chat. When the AI asks questions, answer them, then move to the next number.', all: 'All', filters: 'Categories', input: 'Answer', open: 'Open button recipes', close: 'Close button recipes', tab: 'RECIPES', copy: 'Copy button {n} prompt', share: 'Share', shareLabel: 'Share recipe {n}', linkCopied: 'Recipe link copied', linkFail: 'Could not copy the link' }
   };
 
   var panel = document.getElementById('side-panel');
