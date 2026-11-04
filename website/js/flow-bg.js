@@ -43,7 +43,7 @@
   const SCALE = 1 / 380;      // 흐름 장의 크기 (px당 노이즈 단위). 작을수록 물결이 큼
   const SPEED = 0.7;          // 기본 흐름 속도 (60fps 기준 px/프레임)
   const TIME = 0.0011;        // 흐름 장이 변하는 빠르기
-  const TRAIL = 12;           // 꼬리 길이 (점 개수). 약 30fps로 그리므로 점 사이가 넓어 60fps 때 24점과 같은 길이
+  const TRAIL = 8;            // 꼬리 길이 (점 개수). 약 20fps로 그리므로 점 사이가 넓어 60fps 때 24점과 같은 길이
   const PARALLAX = 0.25;      // 스크롤할 때 입자가 따라 움직이는 비율
   const LINE = 1.1;
   const BANDS = 6;            // 꼬리를 몇 단계 밝기로 나눠 그릴지
@@ -71,7 +71,7 @@
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
     canvas.style.height = H + 'px';
-    const want = Math.round(Math.min(650, Math.max(220, (W * H) / 1300)));
+    const want = Math.round(Math.min(400, Math.max(150, (W * H) / 2000)));
     if (want !== N) {
       N = want; drawn = N;
       xs = new Float32Array(N * TRAIL); ys = new Float32Array(N * TRAIL);
@@ -161,31 +161,34 @@
     return hero.getBoundingClientRect().bottom > innerHeight * 0.8;
   }
 
-  // 느린 흐름이라 약 30fps면 충분: 모니터 주사율에 맞춰 일정한 간격으로 건너뜀 (60Hz면 한 번 걸러 한 번)
-  let tick = 0, every = 2, gaps = [], prevNow = 0, gap = 16.7;
+  // 아주 느린 흐름이라 약 20fps면 충분: 마지막으로 그린 뒤 50ms가 지났을 때만 그림 (60Hz면 세 번에 한 번)
+  const STEP_MS = 50;
+  let lastDrawn = 0;
   function paced(now) {
-    if (prevNow && gaps.length < 30) {
-      gaps.push(now - prevNow);
-      if (gaps.length === 30) { gap = gaps.sort((a, b) => a - b)[15]; every = Math.max(1, Math.round(33.3 / gap)); }
-    }
-    prevNow = now;
-    return tick++ % every === 0;
+    if (now - lastDrawn < STEP_MS - 4) return false;
+    lastDrawn = now;
+    return true;
   }
 
-  let raf = 0, prev = 0, slow = 0;
+  // 쉬는 모드(js/main.js): 20초 동안 손대지 않으면 흐름이 천천히 멈추고 마지막 장면만 남김
+  const resting = () => !!(window.motionRest && window.motionRest.resting);
+  let raf = 0, prev = 0, slow = 0, speed = 1;
   function frame(now) {
     raf = requestAnimationFrame(frame);
     if (!paced(now)) return;
-    const dt = prev ? Math.min(80, now - prev) : 33.3;
+    const dt = prev ? Math.min(120, now - prev) : 50;
     prev = now;
-    if (covered()) return;
+    if (covered()) { if (resting()) pause(); return; }
+    const want = resting() ? 0 : 1;
+    speed += (want - speed) * Math.min(1, dt / 1000 * (want ? 6 : 2));
+    if (!want && speed < 0.02) { pause(); return; }
     // 계속 느리면 그리는 입자 수를 줄임
-    if (dt > every * gap * 1.45) { if (++slow > 45 && drawn > 120) { drawn = Math.round(drawn * 0.85); slow = 0; } }
+    if (dt > STEP_MS * 1.45) { if (++slow > 30 && drawn > 100) { drawn = Math.round(drawn * 0.85); slow = 0; } }
     else slow = Math.max(0, slow - 1);
-    step(dt / 16.7);
+    step(dt / 16.7 * speed);
     draw();
   }
-  function play() { if (!raf && !reduceMotion) { prev = 0; raf = requestAnimationFrame(frame); } }
+  function play() { if (!raf && !reduceMotion && !document.hidden) { prev = 0; raf = requestAnimationFrame(frame); } }
   function pause() { cancelAnimationFrame(raf); raf = 0; }
 
   setup();
@@ -198,7 +201,8 @@
   let rt = 0;
   addEventListener('resize', () => {
     clearTimeout(rt);
-    rt = setTimeout(() => { setup(); if (reduceMotion) draw(); }, 150);
+    rt = setTimeout(() => { setup(); if (!raf) draw(); }, 150);
   });
   document.addEventListener('visibilitychange', () => document.hidden ? pause() : play());
+  document.addEventListener('motion:wake', play);
 })();

@@ -1,6 +1,26 @@
 // 푸터 연도
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// 쉬는 모드: 20초 동안 터치·스크롤·마우스·키보드 입력이 없으면 모션그래픽(원뿔, 바탕 흐름)이 천천히 멈춤.
+// 다시 손대면 바로 움직임. 휴대폰이 계속 뜨거워지며 느려지는 것을 막음
+// 다른 스크립트는 window.motionRest.resting 을 보고, 'motion:rest' / 'motion:wake' 이벤트를 받음
+(() => {
+  const IDLE_MS = 20000;
+  const rest = window.motionRest = { resting: false };
+  let timer = 0;
+  const sleep = () => { rest.resting = true; document.dispatchEvent(new Event('motion:rest')); };
+  function poke() {
+    clearTimeout(timer);
+    timer = setTimeout(sleep, IDLE_MS);
+    if (rest.resting) { rest.resting = false; document.dispatchEvent(new Event('motion:wake')); }
+  }
+  ['pointerdown', 'pointermove', 'touchstart', 'wheel', 'scroll', 'keydown'].forEach((n) =>
+    addEventListener(n, poke, { passive: true, capture: true }));
+  // 다른 탭에 갔다가 돌아오면 새로 시작한 것으로 봄
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) poke(); });
+  poke();
+})();
+
 // 풀페이지 스크롤: 마우스 휠 한 번에 한 화면씩 넘김 (터치 화면은 CSS scroll-snap이 처리)
 (() => {
   const pages = [...document.querySelectorAll('.hero, .button-page')];
