@@ -1,24 +1,28 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="naver-site-verification" content="74e1eeb39f1ebebd0752b0fb7237c66dbafdf594" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // 처음 오는 방문자는 영어로 시작. 전에 국기를 눌러 고른 언어가 있으면 그 언어를 바로 적용
+    try { var l = localStorage.getItem('lang'); if (l !== 'ko' && l !== 'en') { l = 'en'; localStorage.setItem('lang', l); } document.documentElement.lang = l; } catch (e) {}
+  </script>
   <title>BUTTON</title>
   <meta name="application-name" content="BUTTON">
   <meta name="apple-mobile-web-app-title" content="BUTTON">
   <meta property="og:site_name" content="BUTTON">
-  <meta property="og:title" content="BUTTON · 생각은 버튼이 할게요">
-  <meta name="description" content="생각은 버튼이 할게요. 당신은 누르기만 하세요.">
-  <meta property="og:description" content="버튼 90개와 레시피 160개로 AI 프롬프트를 몰라도 원하는 결과물을 만드세요. 누르면 프롬프트가 복사돼요.">
+  <meta property="og:title" content="BUTTON · Let the buttons do the thinking">
+  <meta name="description" content="Let the buttons do the thinking. You just press.">
+  <meta property="og:description" content="Get the results you want from AI with 90 buttons and 160 recipes, no prompt skills needed. Tap a button to copy its prompt.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://button.backtohome.kr/">
   <meta property="og:image" content="https://button.backtohome.kr/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="BUTTON 로고와 &quot;생각은 버튼이 할게요. 당신은 누르기만 하세요.&quot;">
-  <meta property="og:locale" content="ko_KR">
-  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:image:alt" content="BUTTON logo with the line &quot;Let the buttons do the thinking. You just press.&quot;">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,14 +46,14 @@
      crossorigin="anonymous"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main" data-i18n="skip">본문으로 건너뛰기</a>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
 
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="#top" aria-label="맨 위로" data-i18n-label="logoLabel"><svg class="logo-mark" viewBox="9 1 84 60" aria-hidden="true"><defs><radialGradient id="logo-glow"><stop offset="0" style="stop-color:var(--logo-glow)" stop-opacity=".55"/><stop offset="1" style="stop-color:var(--logo-glow)" stop-opacity="0"/></radialGradient><mask id="logo-cut"><path d="M20 11L82 32L20 53A6.3 21 0 0 1 20 11Z" fill="#fff"/><g stroke="#000" stroke-width="3.4"><path d="M27.74 58L45.74 6"/><path d="M42 58L60 6"/><path d="M55.02 58L73.02 6"/></g></mask></defs><g transform="rotate(8 50 32)"><path d="M20 11L82 32L20 53A6.3 21 0 0 1 20 11Z" style="fill:var(--logo-ink)" mask="url(#logo-cut)"/><ellipse cx="20" cy="32" rx="4.91" ry="16.8" style="fill:var(--logo-hole)"/><circle cx="86" cy="32" r="10.08" fill="url(#logo-glow)"/><circle cx="86" cy="32" r="4.2" style="fill:var(--logo-comet)"/></g></svg></a>
-      <div class="lang-switch" role="group" aria-label="언어 선택" data-i18n-label="langLabel">
-        <button type="button" class="lang-btn" data-lang="ko" aria-pressed="true" aria-label="한국어" title="한국어"><svg viewBox="-36 -24 72 48" aria-hidden="true"><path d="M-36-24h72v48h-72z" fill="#fff"/><g transform="rotate(-56.3099325)"><g id="kr-b2"><path id="kr-b" d="M-6-26H6v2H-6zm0 3H6v2H-6zm0 3H6v2H-6z"/><use href="#kr-b" y="44"/></g><path stroke="#fff" d="M0,17v10"/><path fill="#cd2e3a" d="M0-12A12 12 0 0 1 0 12z"/><path fill="#0047a0" d="M0-12A12 12 0 0 0 0 12 6 6 0 0 0 0 0z"/><circle cy="-6" fill="#cd2e3a" r="6"/></g><g transform="rotate(-123.6900675)"><use href="#kr-b2"/><path stroke="#fff" d="M0-23.5v3M0,17v3.5M0,23.5v3"/></g></svg></button>
-        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false" aria-label="English" title="English"><svg viewBox="0 0 57 19.5" preserveAspectRatio="none" aria-hidden="true"><rect width="57" height="19.5" fill="#fff"/><rect y="0" width="57" height="1.5" fill="#b22234"/><rect y="3" width="57" height="1.5" fill="#b22234"/><rect y="6" width="57" height="1.5" fill="#b22234"/><rect y="9" width="57" height="1.5" fill="#b22234"/><rect y="12" width="57" height="1.5" fill="#b22234"/><rect y="15" width="57" height="1.5" fill="#b22234"/><rect y="18" width="57" height="1.5" fill="#b22234"/><rect width="22.8" height="10.5" fill="#3c3b6e"/><circle cx="2.2" cy="2.0" r=".7" fill="#fff"/><circle cx="6.6" cy="2.0" r=".7" fill="#fff"/><circle cx="11.0" cy="2.0" r=".7" fill="#fff"/><circle cx="15.4" cy="2.0" r=".7" fill="#fff"/><circle cx="19.8" cy="2.0" r=".7" fill="#fff"/><circle cx="2.2" cy="5.6" r=".7" fill="#fff"/><circle cx="6.6" cy="5.6" r=".7" fill="#fff"/><circle cx="11.0" cy="5.6" r=".7" fill="#fff"/><circle cx="15.4" cy="5.6" r=".7" fill="#fff"/><circle cx="19.8" cy="5.6" r=".7" fill="#fff"/><circle cx="2.2" cy="9.2" r=".7" fill="#fff"/><circle cx="6.6" cy="9.2" r=".7" fill="#fff"/><circle cx="11.0" cy="9.2" r=".7" fill="#fff"/><circle cx="15.4" cy="9.2" r=".7" fill="#fff"/><circle cx="19.8" cy="9.2" r=".7" fill="#fff"/><circle cx="2.2" cy="12.8" r=".7" fill="#fff"/><circle cx="6.6" cy="12.8" r=".7" fill="#fff"/><circle cx="11.0" cy="12.8" r=".7" fill="#fff"/><circle cx="15.4" cy="12.8" r=".7" fill="#fff"/><circle cx="19.8" cy="12.8" r=".7" fill="#fff"/></svg></button>
+      <a class="logo" href="#top" aria-label="Back to top" data-i18n-label="logoLabel"><svg class="logo-mark" viewBox="9 1 84 60" aria-hidden="true"><defs><radialGradient id="logo-glow"><stop offset="0" style="stop-color:var(--logo-glow)" stop-opacity=".55"/><stop offset="1" style="stop-color:var(--logo-glow)" stop-opacity="0"/></radialGradient><mask id="logo-cut"><path d="M20 11L82 32L20 53A6.3 21 0 0 1 20 11Z" fill="#fff"/><g stroke="#000" stroke-width="3.4"><path d="M27.74 58L45.74 6"/><path d="M42 58L60 6"/><path d="M55.02 58L73.02 6"/></g></mask></defs><g transform="rotate(8 50 32)"><path d="M20 11L82 32L20 53A6.3 21 0 0 1 20 11Z" style="fill:var(--logo-ink)" mask="url(#logo-cut)"/><ellipse cx="20" cy="32" rx="4.91" ry="16.8" style="fill:var(--logo-hole)"/><circle cx="86" cy="32" r="10.08" fill="url(#logo-glow)"/><circle cx="86" cy="32" r="4.2" style="fill:var(--logo-comet)"/></g></svg></a>
+      <div class="lang-switch" role="group" aria-label="Choose language" data-i18n-label="langLabel">
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="true" aria-label="English" title="English"><svg viewBox="0 0 57 19.5" preserveAspectRatio="none" aria-hidden="true"><rect width="57" height="19.5" fill="#fff"/><rect y="0" width="57" height="1.5" fill="#b22234"/><rect y="3" width="57" height="1.5" fill="#b22234"/><rect y="6" width="57" height="1.5" fill="#b22234"/><rect y="9" width="57" height="1.5" fill="#b22234"/><rect y="12" width="57" height="1.5" fill="#b22234"/><rect y="15" width="57" height="1.5" fill="#b22234"/><rect y="18" width="57" height="1.5" fill="#b22234"/><rect width="22.8" height="10.5" fill="#3c3b6e"/><circle cx="2.2" cy="2.0" r=".7" fill="#fff"/><circle cx="6.6" cy="2.0" r=".7" fill="#fff"/><circle cx="11.0" cy="2.0" r=".7" fill="#fff"/><circle cx="15.4" cy="2.0" r=".7" fill="#fff"/><circle cx="19.8" cy="2.0" r=".7" fill="#fff"/><circle cx="2.2" cy="5.6" r=".7" fill="#fff"/><circle cx="6.6" cy="5.6" r=".7" fill="#fff"/><circle cx="11.0" cy="5.6" r=".7" fill="#fff"/><circle cx="15.4" cy="5.6" r=".7" fill="#fff"/><circle cx="19.8" cy="5.6" r=".7" fill="#fff"/><circle cx="2.2" cy="9.2" r=".7" fill="#fff"/><circle cx="6.6" cy="9.2" r=".7" fill="#fff"/><circle cx="11.0" cy="9.2" r=".7" fill="#fff"/><circle cx="15.4" cy="9.2" r=".7" fill="#fff"/><circle cx="19.8" cy="9.2" r=".7" fill="#fff"/><circle cx="2.2" cy="12.8" r=".7" fill="#fff"/><circle cx="6.6" cy="12.8" r=".7" fill="#fff"/><circle cx="11.0" cy="12.8" r=".7" fill="#fff"/><circle cx="15.4" cy="12.8" r=".7" fill="#fff"/><circle cx="19.8" cy="12.8" r=".7" fill="#fff"/></svg></button>
+        <button type="button" class="lang-btn" data-lang="ko" aria-pressed="false" aria-label="한국어" title="한국어"><svg viewBox="-36 -24 72 48" aria-hidden="true"><path d="M-36-24h72v48h-72z" fill="#fff"/><g transform="rotate(-56.3099325)"><g id="kr-b2"><path id="kr-b" d="M-6-26H6v2H-6zm0 3H6v2H-6zm0 3H6v2H-6z"/><use href="#kr-b" y="44"/></g><path stroke="#fff" d="M0,17v10"/><path fill="#cd2e3a" d="M0-12A12 12 0 0 1 0 12z"/><path fill="#0047a0" d="M0-12A12 12 0 0 0 0 12 6 6 0 0 0 0 0z"/><circle cy="-6" fill="#cd2e3a" r="6"/></g><g transform="rotate(-123.6900675)"><use href="#kr-b2"/><path stroke="#fff" d="M0-23.5v3M0,17v3.5M0,23.5v3"/></g></svg></button>
       </div>
     </div>
   </header>
@@ -61,118 +65,118 @@
         <p class="eyebrow" data-i18n="eyebrow">Back to home</p>
         <h1 class="sr-only">BUTTON PORTALMAKER</h1>
         <div class="hero-brand" data-path-draw data-text="BUTTON|PORTALMAKER" data-from="#fff2d0" data-to="#c8463c" data-stroke="4"></div>
-        <p class="lead" data-i18n="lead">생각은 버튼이 할게요. 당신은 누르기만 하세요.</p>
+        <p class="lead" data-i18n="lead">Let the buttons do the thinking. You just press.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="how-to-use.html" data-i18n="primary">How to Use</a>
         </div>
       </div>
-      <a class="scroll-cue" href="#buttons"><span data-i18n="cue">버튼 보러 가기</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="scroll-cue" href="#buttons"><span data-i18n="cue">See the buttons</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </section>
 
-    <section class="buttons" id="buttons" aria-label="버튼 목록" data-i18n-label="buttonsLabel">
+    <section class="buttons" id="buttons" aria-label="Button list" data-i18n-label="buttonsLabel">
       <div class="button-page container" id="page-1">
         <p class="page-label"><span class="page-label-kind">BUTTONS</span> <span class="page-label-range">01 — 30</span></p>
         <ul class="button-grid">
-          <li><a class="tile" href="#">버튼 01</a></li>
-          <li><a class="tile" href="#">버튼 02</a></li>
-          <li><a class="tile" href="#">버튼 03</a></li>
-          <li><a class="tile" href="#">버튼 04</a></li>
-          <li><a class="tile" href="#">버튼 05</a></li>
-          <li><a class="tile" href="#">버튼 06</a></li>
-          <li><a class="tile" href="#">버튼 07</a></li>
-          <li><a class="tile" href="#">버튼 08</a></li>
-          <li><a class="tile" href="#">버튼 09</a></li>
-          <li><a class="tile" href="#">버튼 10</a></li>
-          <li><a class="tile" href="#">버튼 11</a></li>
-          <li><a class="tile" href="#">버튼 12</a></li>
-          <li><a class="tile" href="#">버튼 13</a></li>
-          <li><a class="tile" href="#">버튼 14</a></li>
-          <li><a class="tile" href="#">버튼 15</a></li>
-          <li><a class="tile" href="#">버튼 16</a></li>
-          <li><a class="tile" href="#">버튼 17</a></li>
-          <li><a class="tile" href="#">버튼 18</a></li>
-          <li><a class="tile" href="#">버튼 19</a></li>
-          <li><a class="tile" href="#">버튼 20</a></li>
-          <li><a class="tile" href="#">버튼 21</a></li>
-          <li><a class="tile" href="#">버튼 22</a></li>
-          <li><a class="tile" href="#">버튼 23</a></li>
-          <li><a class="tile" href="#">버튼 24</a></li>
-          <li><a class="tile" href="#">버튼 25</a></li>
-          <li><a class="tile" href="#">버튼 26</a></li>
-          <li><a class="tile" href="#">버튼 27</a></li>
-          <li><a class="tile" href="#">버튼 28</a></li>
-          <li><a class="tile" href="#">버튼 29</a></li>
-          <li><a class="tile" href="#">버튼 30</a></li>
+          <li><a class="tile" href="#">Button 01</a></li>
+          <li><a class="tile" href="#">Button 02</a></li>
+          <li><a class="tile" href="#">Button 03</a></li>
+          <li><a class="tile" href="#">Button 04</a></li>
+          <li><a class="tile" href="#">Button 05</a></li>
+          <li><a class="tile" href="#">Button 06</a></li>
+          <li><a class="tile" href="#">Button 07</a></li>
+          <li><a class="tile" href="#">Button 08</a></li>
+          <li><a class="tile" href="#">Button 09</a></li>
+          <li><a class="tile" href="#">Button 10</a></li>
+          <li><a class="tile" href="#">Button 11</a></li>
+          <li><a class="tile" href="#">Button 12</a></li>
+          <li><a class="tile" href="#">Button 13</a></li>
+          <li><a class="tile" href="#">Button 14</a></li>
+          <li><a class="tile" href="#">Button 15</a></li>
+          <li><a class="tile" href="#">Button 16</a></li>
+          <li><a class="tile" href="#">Button 17</a></li>
+          <li><a class="tile" href="#">Button 18</a></li>
+          <li><a class="tile" href="#">Button 19</a></li>
+          <li><a class="tile" href="#">Button 20</a></li>
+          <li><a class="tile" href="#">Button 21</a></li>
+          <li><a class="tile" href="#">Button 22</a></li>
+          <li><a class="tile" href="#">Button 23</a></li>
+          <li><a class="tile" href="#">Button 24</a></li>
+          <li><a class="tile" href="#">Button 25</a></li>
+          <li><a class="tile" href="#">Button 26</a></li>
+          <li><a class="tile" href="#">Button 27</a></li>
+          <li><a class="tile" href="#">Button 28</a></li>
+          <li><a class="tile" href="#">Button 29</a></li>
+          <li><a class="tile" href="#">Button 30</a></li>
         </ul>
       </div>
       <div class="button-page container" id="page-2">
         <p class="page-label"><span class="page-label-kind">BUTTONS</span> <span class="page-label-range">31 — 60</span></p>
         <ul class="button-grid">
-          <li><a class="tile" href="#">버튼 31</a></li>
-          <li><a class="tile" href="#">버튼 32</a></li>
-          <li><a class="tile" href="#">버튼 33</a></li>
-          <li><a class="tile" href="#">버튼 34</a></li>
-          <li><a class="tile" href="#">버튼 35</a></li>
-          <li><a class="tile" href="#">버튼 36</a></li>
-          <li><a class="tile" href="#">버튼 37</a></li>
-          <li><a class="tile" href="#">버튼 38</a></li>
-          <li><a class="tile" href="#">버튼 39</a></li>
-          <li><a class="tile" href="#">버튼 40</a></li>
-          <li><a class="tile" href="#">버튼 41</a></li>
-          <li><a class="tile" href="#">버튼 42</a></li>
-          <li><a class="tile" href="#">버튼 43</a></li>
-          <li><a class="tile" href="#">버튼 44</a></li>
-          <li><a class="tile" href="#">버튼 45</a></li>
-          <li><a class="tile" href="#">버튼 46</a></li>
-          <li><a class="tile" href="#">버튼 47</a></li>
-          <li><a class="tile" href="#">버튼 48</a></li>
-          <li><a class="tile" href="#">버튼 49</a></li>
-          <li><a class="tile" href="#">버튼 50</a></li>
-          <li><a class="tile" href="#">버튼 51</a></li>
-          <li><a class="tile" href="#">버튼 52</a></li>
-          <li><a class="tile" href="#">버튼 53</a></li>
-          <li><a class="tile" href="#">버튼 54</a></li>
-          <li><a class="tile" href="#">버튼 55</a></li>
-          <li><a class="tile" href="#">버튼 56</a></li>
-          <li><a class="tile" href="#">버튼 57</a></li>
-          <li><a class="tile" href="#">버튼 58</a></li>
-          <li><a class="tile" href="#">버튼 59</a></li>
-          <li><a class="tile" href="#">버튼 60</a></li>
+          <li><a class="tile" href="#">Button 31</a></li>
+          <li><a class="tile" href="#">Button 32</a></li>
+          <li><a class="tile" href="#">Button 33</a></li>
+          <li><a class="tile" href="#">Button 34</a></li>
+          <li><a class="tile" href="#">Button 35</a></li>
+          <li><a class="tile" href="#">Button 36</a></li>
+          <li><a class="tile" href="#">Button 37</a></li>
+          <li><a class="tile" href="#">Button 38</a></li>
+          <li><a class="tile" href="#">Button 39</a></li>
+          <li><a class="tile" href="#">Button 40</a></li>
+          <li><a class="tile" href="#">Button 41</a></li>
+          <li><a class="tile" href="#">Button 42</a></li>
+          <li><a class="tile" href="#">Button 43</a></li>
+          <li><a class="tile" href="#">Button 44</a></li>
+          <li><a class="tile" href="#">Button 45</a></li>
+          <li><a class="tile" href="#">Button 46</a></li>
+          <li><a class="tile" href="#">Button 47</a></li>
+          <li><a class="tile" href="#">Button 48</a></li>
+          <li><a class="tile" href="#">Button 49</a></li>
+          <li><a class="tile" href="#">Button 50</a></li>
+          <li><a class="tile" href="#">Button 51</a></li>
+          <li><a class="tile" href="#">Button 52</a></li>
+          <li><a class="tile" href="#">Button 53</a></li>
+          <li><a class="tile" href="#">Button 54</a></li>
+          <li><a class="tile" href="#">Button 55</a></li>
+          <li><a class="tile" href="#">Button 56</a></li>
+          <li><a class="tile" href="#">Button 57</a></li>
+          <li><a class="tile" href="#">Button 58</a></li>
+          <li><a class="tile" href="#">Button 59</a></li>
+          <li><a class="tile" href="#">Button 60</a></li>
         </ul>
       </div>
       <div class="button-page container" id="page-3">
         <p class="page-label"><span class="page-label-kind">BUTTONS</span> <span class="page-label-range">61 — 90</span></p>
         <ul class="button-grid">
-          <li><a class="tile" href="#">버튼 61</a></li>
-          <li><a class="tile" href="#">버튼 62</a></li>
-          <li><a class="tile" href="#">버튼 63</a></li>
-          <li><a class="tile" href="#">버튼 64</a></li>
-          <li><a class="tile" href="#">버튼 65</a></li>
-          <li><a class="tile" href="#">버튼 66</a></li>
-          <li><a class="tile" href="#">버튼 67</a></li>
-          <li><a class="tile" href="#">버튼 68</a></li>
-          <li><a class="tile" href="#">버튼 69</a></li>
-          <li><a class="tile" href="#">버튼 70</a></li>
-          <li><a class="tile" href="#">버튼 71</a></li>
-          <li><a class="tile" href="#">버튼 72</a></li>
-          <li><a class="tile" href="#">버튼 73</a></li>
-          <li><a class="tile" href="#">버튼 74</a></li>
-          <li><a class="tile" href="#">버튼 75</a></li>
-          <li><a class="tile" href="#">버튼 76</a></li>
-          <li><a class="tile" href="#">버튼 77</a></li>
-          <li><a class="tile" href="#">버튼 78</a></li>
-          <li><a class="tile" href="#">버튼 79</a></li>
-          <li><a class="tile" href="#">버튼 80</a></li>
-          <li><a class="tile" href="#">버튼 81</a></li>
-          <li><a class="tile" href="#">버튼 82</a></li>
-          <li><a class="tile" href="#">버튼 83</a></li>
-          <li><a class="tile" href="#">버튼 84</a></li>
-          <li><a class="tile" href="#">버튼 85</a></li>
-          <li><a class="tile" href="#">버튼 86</a></li>
-          <li><a class="tile" href="#">버튼 87</a></li>
-          <li><a class="tile" href="#">버튼 88</a></li>
-          <li><a class="tile" href="#">버튼 89</a></li>
-          <li><a class="tile" href="#">버튼 90</a></li>
+          <li><a class="tile" href="#">Button 61</a></li>
+          <li><a class="tile" href="#">Button 62</a></li>
+          <li><a class="tile" href="#">Button 63</a></li>
+          <li><a class="tile" href="#">Button 64</a></li>
+          <li><a class="tile" href="#">Button 65</a></li>
+          <li><a class="tile" href="#">Button 66</a></li>
+          <li><a class="tile" href="#">Button 67</a></li>
+          <li><a class="tile" href="#">Button 68</a></li>
+          <li><a class="tile" href="#">Button 69</a></li>
+          <li><a class="tile" href="#">Button 70</a></li>
+          <li><a class="tile" href="#">Button 71</a></li>
+          <li><a class="tile" href="#">Button 72</a></li>
+          <li><a class="tile" href="#">Button 73</a></li>
+          <li><a class="tile" href="#">Button 74</a></li>
+          <li><a class="tile" href="#">Button 75</a></li>
+          <li><a class="tile" href="#">Button 76</a></li>
+          <li><a class="tile" href="#">Button 77</a></li>
+          <li><a class="tile" href="#">Button 78</a></li>
+          <li><a class="tile" href="#">Button 79</a></li>
+          <li><a class="tile" href="#">Button 80</a></li>
+          <li><a class="tile" href="#">Button 81</a></li>
+          <li><a class="tile" href="#">Button 82</a></li>
+          <li><a class="tile" href="#">Button 83</a></li>
+          <li><a class="tile" href="#">Button 84</a></li>
+          <li><a class="tile" href="#">Button 85</a></li>
+          <li><a class="tile" href="#">Button 86</a></li>
+          <li><a class="tile" href="#">Button 87</a></li>
+          <li><a class="tile" href="#">Button 88</a></li>
+          <li><a class="tile" href="#">Button 89</a></li>
+          <li><a class="tile" href="#">Button 90</a></li>
         </ul>
         <footer class="site-footer">
           <p>&copy; <span id="year"></span> BUTTON. All rights reserved.</p>
@@ -182,7 +186,7 @@
   </main>
 
   <!-- 오른쪽 위치 표시: 지금 보고 있는 버튼 화면 (누르면 그 화면으로 이동) -->
-  <nav class="page-dots" aria-label="버튼 화면" data-i18n-label="dotsLabel">
+  <nav class="page-dots" aria-label="Button screens" data-i18n-label="dotsLabel">
     <a href="#page-1" aria-label="버튼 01–30">01</a>
     <a href="#page-2" aria-label="버튼 31–60">31</a>
     <a href="#page-3" aria-label="버튼 61–90">61</a>

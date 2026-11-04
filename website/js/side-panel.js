@@ -33,7 +33,7 @@
   var target = linkedRecipe(); // 공유 링크로 들어온 레시피 번호 (강조 표시). 없으면 0
   var userScrolled = false; // 시트를 새로 받아와도, 방문자가 이미 스크롤했으면 위치를 건드리지 않음
 
-  function lang() { return document.documentElement.lang === 'en' ? 'en' : 'ko'; }
+  function lang() { return document.documentElement.lang === 'ko' ? 'ko' : 'en'; }
   function el(tag, cls, text) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
