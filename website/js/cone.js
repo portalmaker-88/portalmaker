@@ -23,7 +23,7 @@
 
   const isPhone = Math.min(innerWidth, innerHeight) < 700;
   const state = {
-    count: isPhone ? 4000 : 5500,
+    count: isPhone ? 2200 : 3000,   // 많을수록 촘촘하지만 휴대폰이 빨리 뜨거워짐
     turn: 32,                 // 한 바퀴 초
     tilt: 8,                  // 꼭지가 수평에서 아래로 기운 각도
     drawn: 0,                 // 실제로 그리는 수 (성능에 따라 줄어듦)
@@ -93,7 +93,7 @@
   // 화면 크기
   let W = 0, H = 0, dpr = 1, focal = 1, cx = 0, cy = 0;
   function resize() {
-    dpr = Math.min(isPhone ? 2 : 1.5, devicePixelRatio || 1);
+    dpr = Math.min(isPhone ? 1.5 : 1.25, devicePixelRatio || 1);  // 작은 카드라 이 정도 해상도면 충분
     W = canvas.clientWidth; H = canvas.clientHeight;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -147,8 +147,10 @@
   }
 
   const ease = (t) => 1 - Math.pow(1 - t, 3);
-  let start = performance.now();
-  let last = start, running = true, rafId = 0;
+  let last = performance.now(), running = true, rafId = 0;
+  // 움직임 시간: 실제 시간 대신 쌓아 가는 시간. 쉬는 모드에서는 쌓이는 빠르기(speed)를 0으로 천천히 줄임
+  let simT = 0, speed = 1;
+  const resting = () => !!(window.motionRest && window.motionRest.resting);
   let fpsAvg = 60, slowFor = 0;
 
   const project = (a, r, phi) => {
@@ -285,30 +287,37 @@
     ctx.globalAlpha = 1;
   }
 
-  // 120·144Hz 모니터에서는 화면이 바뀔 때마다 그리지 않고 약 60fps로 맞춤 (일정한 간격으로 건너뜀)
-  let tick = 0, every = 1, gaps = [], prevNow = 0;
+  // 카드가 모이는 처음 몇 초는 약 60fps, 다 모인 뒤에는 천천히 도는 장면이라 약 30fps로 그림.
+  // 120·144Hz 화면에서도 마지막으로 그린 뒤 목표 간격이 지났을 때만 그림
+  const ASSEMBLED = 5.5;      // 카드가 다 모이고 테두리까지 그려지는 시점(초)
+  let lastDrawn = 0;
+  const targetMs = () => (simT < ASSEMBLED ? 16.7 : 33.3);
   function paced(now) {
-    if (prevNow && gaps.length < 30) {
-      gaps.push(now - prevNow);
-      if (gaps.length === 30) every = Math.max(1, Math.round(16.7 / gaps.sort((a, b) => a - b)[15]));
-    }
-    prevNow = now;
-    return tick++ % every === 0;
+    if (now - lastDrawn < targetMs() - 4) return false;
+    lastDrawn = now;
+    return true;
   }
-  function frame(now) {
-    if (!reduceMotion && !paced(now)) { if (running) rafId = requestAnimationFrame(frame); return; }
-    const dt = Math.min(0.05, (now - last) / 1000);
+  function frame(now, still) {
+    if (!reduceMotion && !still && !paced(now)) { if (running) rafId = requestAnimationFrame(frame); return; }
+    const realDt = Math.min(0.08, (now - last) / 1000);
     last = now;
-    const t = reduceMotion ? 99 : (now - start) / 1000;
+    // 쉬는 모드면 약 1.5초에 걸쳐 천천히 멈추고, 깨어나면 약 0.5초에 걸쳐 다시 빨라짐
+    const want = resting() ? 0 : 1;
+    speed += (want - speed) * Math.min(1, realDt * (want ? 6 : 2.5));
+    if (want === 0 && speed < 0.02) speed = 0;
+    const dt = Math.min(0.05, realDt) * speed;
+    if (!reduceMotion) simT += dt;
+    const t = reduceMotion ? 99 : simT;
 
     if (!reduceMotion) {
       spin += dt * (Math.PI * 2 / state.turn + spinBoost);
       spinBoost *= Math.pow(0.12, dt);
     }
 
-    // 성능 감시: 2초 넘게 느리면 그리는 카드 수를 20%씩 줄임
-    if (dt > 0) fpsAvg += (1 / dt - fpsAvg) * 0.05;
-    if (t > 3 && fpsAvg < 45) {
+    // 성능 감시: 목표(60 또는 30fps)의 3/4보다 2초 넘게 느리면 그리는 카드 수를 20%씩 줄임
+    const targetFps = 1000 / targetMs();
+    if (realDt > 0 && speed === 1) fpsAvg += (1 / realDt - fpsAvg) * 0.05;
+    if (t > 3 && speed === 1 && fpsAvg < targetFps * 0.75) {
       slowFor += dt;
       if (slowFor > 2 && state.drawn > 400) { state.drawn = Math.round(state.drawn * 0.8); slowFor = 0; }
     } else slowFor = 0;
@@ -373,21 +382,28 @@
     if (!reduceMotion) updateSparks(dt);
     drawHead(t);
 
+    // 쉬는 모드로 완전히 멈췄으면 마지막 장면을 남기고 그리기를 그만둠 (깨어나면 다시 시작)
+    if (speed === 0 && !reduceMotion) { running = false; return; }
     if (running && !reduceMotion) rafId = requestAnimationFrame(frame);
   }
 
+  let visible = true;
   function play() {
-    if (running) return;
+    if (running || reduceMotion || !visible || document.hidden) return;
+    if (resting() && speed === 0) return;
     running = true; last = performance.now();
     rafId = requestAnimationFrame(frame);
   }
   function pause() { running = false; cancelAnimationFrame(rafId); }
+  // 멈춘 상태에서 화면 크기가 바뀌면 지운 캔버스에 한 장면만 다시 그림
+  function drawStill() { if (!running) frame(performance.now(), true); }
+  document.addEventListener('motion:wake', play);
 
   // 화면 밖이거나 다른 탭이면 멈춤
   document.addEventListener('visibilitychange', () => document.hidden ? pause() : play());
   // 위쪽 고정 메뉴 줄 뒤에 히어로 끝자락만 걸쳐 있을 때(버튼 화면)도 안 보이므로 멈춤
   const headerH = document.querySelector('.site-header')?.offsetHeight || 0;
-  new IntersectionObserver(([e]) => e.isIntersecting ? play() : pause(), { rootMargin: `-${headerH + 1}px 0px 0px 0px` }).observe(canvas);
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? play() : pause(); }, { rootMargin: `-${headerH + 1}px 0px 0px 0px` }).observe(canvas);
 
   // 좌우로 끌면 회전 가속
   let lastX = null;
@@ -400,10 +416,10 @@
   });
   ['pointerup', 'pointercancel', 'pointerleave'].forEach((n) => canvas.addEventListener(n, () => { lastX = null; }));
 
-  addEventListener('resize', () => { if (resize()) build(); buildStreaks(); if (reduceMotion) frame(performance.now()); });
+  addEventListener('resize', () => { if (resize()) build(); buildStreaks(); drawStill(); });
   resize();
-  // 원뿔이 길어진 만큼 PC 카드 수도 늘림 (최대 6,500개, 느리면 자동으로 줄어듦)
-  if (!isPhone) state.count = Math.min(6500, Math.round(5500 * L / 2 / 100) * 100);
+  // 원뿔이 길어진 만큼 PC 카드 수도 늘림 (최대 3,600개, 느리면 자동으로 줄어듦)
+  if (!isPhone) state.count = Math.min(3600, Math.round(3000 * L / 2 / 100) * 100);
   buildStreaks();
   build();
   running = true;
