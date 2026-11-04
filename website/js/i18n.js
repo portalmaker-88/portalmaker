@@ -48,7 +48,7 @@
 
   var tiles = Array.prototype.slice.call(document.querySelectorAll('.button-grid .tile'));
   var rows = {}; // 버튼 번호 -> { ko, en, promptKo, promptEn }
-  var lang = 'ko';
+  var lang = 'en'; // 기본 언어는 영어. 전에 고른 언어가 있으면 아래에서 그걸로 바꿈
 
   function store(key, value) {
     try { if (value === undefined) return localStorage.getItem(key); localStorage.setItem(key, value); } catch (e) {}
