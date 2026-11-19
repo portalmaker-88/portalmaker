@@ -62,14 +62,16 @@ document.getElementById('year').textContent = new Date().getFullYear();
 (() => {
   const pages = [...document.querySelectorAll('.button-page')];
   if (!pages.length) return;
-  const RATIO = 3, MIN_H = 36, MAX_H = 96, WIDTH_SCALE = 2 / 3, PHONE_WIDTH_SCALE = 0.8;
+  const RATIO = 3, MIN_H = 36, MAX_H = 96, WIDTH_SCALE = 2 / 3, PHONE_WIDTH_SCALE = 0.8, MAX_PAGE_W = 1440;
   function fit() {
     const page = pages[0], grid = page.querySelector('.button-grid');
     const n = grid.children.length;
     const cs = getComputedStyle(page), gs = getComputedStyle(grid);
     const label = page.querySelector('.page-label');
     const labelH = label ? label.offsetHeight + parseFloat(getComputedStyle(label).marginBottom) : 0;
-    const W = page.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    // 버튼 화면은 아래에서 버튼 묶음 폭으로 줄이므로, 줄이기 전 폭(화면 폭, 최대 1440px)을 기준으로 계산
+    const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const W = Math.min(document.documentElement.clientWidth, MAX_PAGE_W) - padX;
     const H = page.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - labelH;
     const gap = parseFloat(gs.rowGap) || 0;
     let best = null;
@@ -88,8 +90,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
       p.style.setProperty('--rows', best.rows);
       // 휴대폰은 화면이 좁아 버튼 이름이 잘리지 않게 조금 더 넓게
       const scale = W < 600 ? PHONE_WIDTH_SCALE : WIDTH_SCALE;
-      p.style.setProperty('--tile-w', Math.floor(best.w * scale) + 'px');
+      const tileW = Math.floor(best.w * scale);
+      p.style.setProperty('--tile-w', tileW + 'px');
       p.style.setProperty('--tile-h', Math.floor(best.h) + 'px');
+      // 버튼 화면 자체를 버튼 묶음 폭으로 줄여 양옆을 비워 둠.
+      // 화면 전체 폭을 차지하면 구글 좌우 배너(사이드 레일 광고)가 자리가 없다고 판단해 나타났다가 바로 숨음
+      p.style.maxWidth = Math.ceil(tileW * best.cols + gap * (best.cols - 1) + padX) + 'px';
       p.classList.add('is-fitted');
     });
   }
