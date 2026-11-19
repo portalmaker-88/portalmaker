@@ -163,8 +163,12 @@ p { margin: 0 0 1rem; }
 }
 
 /* ===== 풀페이지 스크롤: 히어로 1장 + 버튼 30개씩 3장 ===== */
-html { scroll-snap-type: y mandatory; }
+/* 버튼 화면이 있는 페이지(메인)에만 적용. 설명서 페이지는 보통 스크롤 */
+html:has(.button-page) { scroll-snap-type: y mandatory; }
 .hero, .button-page { scroll-snap-align: start; scroll-snap-stop: always; }
+/* 구글 자동 광고: 화면과 화면 사이에 끼어든 광고도 멈추는 자리로 만듦.
+   이게 없으면 광고가 잠깐 보였다가 스크롤이 다음 화면으로 끌려가 바로 사라져 보임 */
+html:has(.button-page) .google-auto-placed { scroll-snap-align: center; }
 
 /* ===== 버튼 목록: 한 화면에 30개, 모든 버튼이 같은 크기 ===== */
 .buttons {
@@ -177,7 +181,7 @@ html { scroll-snap-type: y mandatory; }
   --cols: 3; --rows: 10;   /* 세로 화면(휴대폰): 3 x 10 */
   position: relative;
   display: flex; flex-direction: column;
-  height: calc(100svh - var(--header-h));
+  min-height: calc(100svh - var(--header-h)); /* 광고가 안에 끼어들면 늘어나서 버튼과 겹치지 않게 */
   padding-top: clamp(12px, 3vh, 40px);
   padding-bottom: clamp(28px, 4vh, 44px); /* 마지막 화면은 이 자리에 푸터가 들어감 */
 }

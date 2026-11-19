@@ -23,14 +23,17 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 // 풀페이지 스크롤: 마우스 휠 한 번에 한 화면씩 넘김 (터치 화면은 CSS scroll-snap이 처리)
 (() => {
-  const pages = [...document.querySelectorAll('.hero, .button-page')];
-  if (!pages.length || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // 구글 자동 광고(.google-auto-placed)는 나중에 끼어들므로 휠을 굴릴 때마다 다시 찾음:
+  // 광고도 한 화면처럼 멈춰서 보이게 (예전엔 광고를 건너뛰어 잠깐 보였다 사라짐)
+  const SEL = '.hero, .button-page, .google-auto-placed';
+  if (!document.querySelector('.button-page') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const headerH = () => document.querySelector('.site-header').offsetHeight;
   let lockedUntil = 0;
 
   addEventListener('wheel', (e) => {
     if (e.target.closest && e.target.closest('.side-panel')) return; // 사이드바 위에서는 사이드바만 스크롤
     if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX) || Math.abs(e.deltaY) < 4) return;
+    const pages = [...document.querySelectorAll(SEL)].filter((p) => p.offsetHeight > 0);
     const top = headerH();
     const dir = e.deltaY > 0 ? 1 : -1;
     // 지금 화면에 걸쳐 있는 페이지 (헤더 바로 아래 줄 기준)
@@ -45,7 +48,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const next = pages[i + dir];
     if (!next) return;
     lockedUntil = performance.now() + 800;
-    scrollTo({ top: next.getBoundingClientRect().top + scrollY - top, behavior: 'smooth' });
+    const nr = next.getBoundingClientRect();
+    // 광고는 화면 가운데에 오게, 버튼 화면은 헤더 바로 아래에 오게
+    const y = next.matches('.google-auto-placed')
+      ? nr.top + scrollY - (top + innerHeight - nr.height) / 2
+      : nr.top + scrollY - top;
+    scrollTo({ top: y, behavior: 'smooth' });
   }, { passive: false });
 })();
 
