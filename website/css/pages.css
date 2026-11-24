@@ -1,0 +1,60 @@
+/* 버튼·레시피 페이지 (/prompts/…, /recipes/…) 전용. 기본 모양은 style.css의 How to Use 페이지 것을 같이 씀 */
+.page-seo .lang-btn { display: inline-flex; align-items: center; justify-content: center; }
+.page-seo .lang-btn[aria-current="true"] { opacity: 1; border-color: var(--color-border); }
+.page-seo .howto-footer { flex-direction: column; gap: .25rem; }
+
+.crumbs { font-size: .8rem; color: var(--muted); margin-bottom: 1.25rem; }
+.crumbs a { color: var(--cream-2); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+
+.seo-page h1 { overflow-wrap: anywhere; }
+.seo-page .howto-lead { margin-bottom: 1rem; }
+.seo-how { color: var(--cream-2); font-size: .95rem; max-width: 60ch; }
+.seo-copy-row { margin: 1.25rem 0 0; }
+.copy-btn.done::after { content: " ✓"; }
+
+.seo-block { margin-top: 2.25rem; }
+.seo-block h2, .seo-steps-h { font-size: 1.2rem; margin: 0 0 .75rem; }
+.seo-steps-h { margin-top: 2.25rem; }
+.seo-block p { color: var(--cream-2); }
+.seo-first { padding: 1rem 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(20, 20, 19, .82); }
+.seo-first p { margin: 0; }
+
+.seo-questions { margin: 0; padding-left: 1.3rem; color: var(--cream-2); }
+.seo-questions li + li { margin-top: .4rem; }
+
+.prompt-text {
+  margin: 0; padding: 1rem 1.1rem; max-height: 26rem; overflow: auto;
+  white-space: pre-wrap; word-break: break-word;
+  font-family: var(--font-mono); font-size: .82rem; line-height: 1.6; color: var(--cream-2);
+  background: var(--ink-1); border: 1px solid var(--line-soft); border-radius: 10px;
+}
+
+.seo-list { list-style: none; margin: 0; padding: 0; }
+.seo-list li { border-bottom: 1px solid var(--line-soft); }
+.seo-list a { display: block; padding: .7rem 0; text-decoration: none; color: var(--cream); }
+.seo-list a:hover { color: #fff; }
+.seo-list a:hover strong, .seo-list a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+.seo-num { font-family: var(--font-mono); color: var(--accent); font-size: .85rem; margin-right: .35rem; }
+.seo-cards small { display: block; color: var(--muted); font-size: .85rem; margin-top: .15rem; }
+
+.seo-step h3 { font-size: 1.05rem; margin: 0 0 .4rem; }
+.seo-step h3 a { text-decoration: none; }
+.seo-step h3 a:hover { text-decoration: underline; }
+.seo-step.done::before { content: "✓"; }
+.seo-step-actions { margin: .25rem 0 .75rem; }
+.seo-step .btn { padding: .55rem 1.1rem; font-size: .9rem; }
+.seo-details summary { cursor: pointer; color: var(--muted); font-size: .85rem; margin-bottom: .5rem; }
+
+.seo-chips { margin-top: 1.5rem; }
+.seo-chips .recipe-chip { text-decoration: none; }
+
+.seo-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 2.5rem; }
+.seo-pager a { display: block; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; background: rgba(20, 20, 19, .82); }
+.seo-pager a:hover { border-color: var(--accent); }
+.seo-pager small { display: block; color: var(--muted); font-size: .75rem; }
+.seo-pager-next { grid-column: 2; text-align: right; }
+
+.seo-footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.2rem; margin-bottom: .5rem; font-size: .85rem; }
+.seo-footer-nav a { color: var(--cream-2); text-decoration: none; }
+.seo-footer-nav a:hover { text-decoration: underline; }

@@ -532,3 +532,12 @@ html[lang="en"] [data-lang-block="ko"], html:not([lang="en"]) [data-lang-block="
   .howto-step { padding: 1.1rem 1rem 1rem 3.1rem; }
   .howto-step::before { left: .9rem; font-size: .95rem; }
 }
+
+/* 첫 화면 맨 아래 저작권 줄 옆의 전체 프롬프트·레시피 링크 */
+.footer-links { margin-left: .6rem; }
+.footer-links a { color: var(--cream-2); text-decoration: none; }
+.footer-links a:hover { text-decoration: underline; }
+@media (max-width: 600px) {
+  .site-footer p { text-align: center; line-height: 1.35; }
+  .footer-links { display: block; margin-left: 0; }
+}
