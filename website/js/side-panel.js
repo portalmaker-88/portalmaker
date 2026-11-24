@@ -50,7 +50,13 @@
     return m ? parseInt(m[1], 10) : 0;
   }
 
-  function shareUrl(n) { return location.origin + location.pathname + '?recipe=' + n; }
+  // 레시피마다 따로 만든 페이지(/recipes/N/, 한국어는 /ko/recipes/N/)가 있으면 그 주소를 공유:
+  // 메신저 미리보기에 레시피 이름이 나오고, 검색에도 잡힘. 스냅샷에 없는 새 레시피는 예전처럼 ?recipe=N
+  var PAGE_MAX = (window.RECIPES_SNAPSHOT || []).reduce(function (m, r) { return Math.max(m, recipeNo(r)); }, 0);
+  function shareUrl(n) {
+    if (n <= PAGE_MAX) return location.origin + (lang() === 'ko' ? '/ko' : '') + '/recipes/' + n + '/';
+    return location.origin + location.pathname + '?recipe=' + n;
+  }
 
   // 휴대폰처럼 공유 창이 있으면 그걸 열고, 없으면 링크를 복사하고 알림
   function share(n, name) {

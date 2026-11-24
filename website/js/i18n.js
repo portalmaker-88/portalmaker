@@ -73,7 +73,8 @@
       var n = i + 1;
       var row = rows[n] || {};
       // 시트 이름 앞의 "N. "은 떼고, 번호는 따로 작게 보여줌
-      var name = ((lang === 'ko' ? row.ko : row.en) || '').replace(/^\s*\d+\s*[.)]\s*/, '') || t.tile;
+      // 시트를 아직 못 읽었으면 HTML에 미리 넣어 둔 이름(data-ko / data-en)을 씀
+      var name = ((lang === 'ko' ? row.ko : row.en) || '').replace(/^\s*\d+\s*[.)]\s*/, '') || tile.getAttribute('data-' + lang) || t.tile;
       var num = document.createElement('span');
       num.className = 'tile-num';
       num.textContent = pad(n);
